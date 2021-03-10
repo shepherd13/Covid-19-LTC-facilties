@@ -12,6 +12,11 @@ class Covid19_DiseaseProgression(DiseaseProgression):
 	def update_states(self, day, person, facility):
 		current_disease_state = self.matric[facility].people[person].get_disease_state(day)
 
+		# Dies due to Age
+		if (self.matric[facility].people[person].class_name() == 'Resident') and \
+			(random.choices([0, 1], [1.0 - self.parameters['Daily baseline mortality rate'], self.parameters['Daily baseline mortality rate']])[0] == 1):
+			self.matric[facility].people[person].update_disease_state(day, -2)  # died
+
 		if current_disease_state > 0:
 			self.matric[facility].people[person].days_infected += 1
 
@@ -42,6 +47,10 @@ class Covid19_DiseaseProgression(DiseaseProgression):
 
 			# symptomatic
 			elif current_disease_state == 3:
+				# Dies due to Covid19
+				if (self.matric[facility].people[person].class_name() == 'Resident') and \
+				(random.choices([0, 1], [1.0 - self.parameters['Daily covid mortality rate'], self.parameters['Daily covid mortality rate']])[0] == 1):
+					self.matric[facility].people[person].update_disease_state(day, -2)  # died
 				# if infection over
 				if (self.matric[facility].people[person].days_infected - self.matric[facility].people[person].transmission_start) >= self.matric[facility].people[person].transmission_end:
 					self.matric[facility].people[person].update_disease_state(day, -1)  # recovered

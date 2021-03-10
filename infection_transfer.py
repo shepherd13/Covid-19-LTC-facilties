@@ -18,10 +18,15 @@ class InitialInfection(InfectionTransfer):
 	def transfer(self, day):
 		infection_rate = self.parameters['Initial Infection Rate']
 		for facility in range(len(self.matric)):
-			for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_staff):
+			for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff):
 				if (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
 					self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
 					self.update_daily_infected(staff, facility)
+
+		for staff in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
+			if (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
+				self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
+				self.update_daily_infected(staff, facility)
 		return self.daily_residents_infected + self.daily_staff_infected
 
 

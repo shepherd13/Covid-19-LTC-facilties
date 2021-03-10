@@ -45,19 +45,20 @@ class Collect_data:
 
 	def update_states(self, day, daily_infected):
 		for facility in range(len(self.matric)):
-			for person in range(self.matric[facility].n_residents+self.matric[facility].n_p_staff):
+			for person in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff):
 				current_disease_state = self.matric[facility].people[person].get_disease_state(day)
 				self.record_states(day, current_disease_state)
 				# set states for next day
 				if (day + 1) != self.days:
-					self.matric[facility].people[person].update_next_days_disease_state(current_disease_state)
+					self.matric[facility].people[person].update_disease_state(day + 1, current_disease_state)
 
-		for person in range(self.matric[facility].n_residents+self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
+
+		for person in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
 				current_disease_state = self.matric[facility].people[person].get_disease_state(day)
 				self.record_states(day, current_disease_state)
 				# set states for next day
 				if (day + 1) != self.days:
-					self.matric[facility].people[person].update_next_days_disease_state(current_disease_state)
+					self.matric[facility].people[person].update_disease_state(day + 1, current_disease_state)
 
 		self.daily_infected[day] = daily_infected
 		self.cumulative_infected[day] = daily_infected

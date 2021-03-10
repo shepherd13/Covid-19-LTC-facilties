@@ -12,7 +12,7 @@ def get_temporary_workers(parameters):
 	for fac in parameters['Facilities']:
 		for i in range(int(fac[1] * parameters['TEMP_PERCENTAGE'])):
 			employment_type = 1				#Permanent = 0, Temporary = 1
-			s = Staff(employment_type)
+			s = Staff(employment_type, parameters)
 			temp_staff.append(s)
 	return temp_staff
 
@@ -25,12 +25,12 @@ def generate_facility(residents, staff, total_temp_staff, parameters):
 
 	while(ind < residents):
 		gender = random.choices([0, 1], [parameters['MALE_PERCENTAGE'], 1 - parameters['MALE_PERCENTAGE']])[0]    #Male = 0, Female = 1
-		r = Resident(gender)
+		r = Resident(gender, parameters)
 		people.append(r)
 		ind += 1
 	while(ind < residents + p_staff):
 		employment_type = 0				#Permanent = 0, Temporary = 1
-		s = Staff(employment_type)
+		s = Staff(employment_type, parameters)
 		people.append(s)
 		ind += 1
 	#while(ind < residents + p_staff + len(total_temp_staff)):
@@ -46,7 +46,7 @@ def get_staff_interactions(parameters):
 	total_temp_staff = get_temporary_workers(parameters)
 	for fac in parameters['Facilities']:
 		people, residents, p_staff, t_staff = generate_facility(fac[0], fac[1], total_temp_staff, parameters)
-		f = Facility(people, p_staff, t_staff, *fac)
+		f = Facility(parameters, people, p_staff, t_staff, *fac)
 		facilities.append(f)
 
 

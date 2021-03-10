@@ -6,11 +6,13 @@ import numpy as np
 from pathlib import Path
 from multiprocessing import Pool
 import time
+import copy
 
 import network_generator as ng
 from infection_transfer import ProbabilityPerInteraction, InitialInfection
 from disease_progression import Covid19_DiseaseProgression
 from collect_data import Collect_data
+from implement_policies import ReplacePeople
 from mean_se import get_mean_se
 
 def get_parameters(param_file):
@@ -46,12 +48,14 @@ def run_sim(run, parameters, interactions):
 	ppi = ProbabilityPerInteraction(parameters, interactions)
 	dp = Covid19_DiseaseProgression(parameters, interactions)
 	cd = Collect_data(days, interactions)
+	rp = ReplacePeople(parameters, interactions)
 
 	daily_infected = ii.transfer(0)
 	for day in range(days):
 		daily_infected += ppi.transfer(day)
 		dp.disease_progression(day)
 		cd.update_states(day, daily_infected)
+		rp.replace_dead_people(day)
 		daily_infected = 0
 
 	export_file = parameters['Output Directory'] + str(run) + '.csv'
@@ -61,25 +65,28 @@ def run_sim(run, parameters, interactions):
 def main(param_file):
 	parameters = get_parameters(param_file)
 	output = get_output_directory(parameters)
-
-	#p = Pool(processes=100)  # max 10 processes
-	interactions = ng.get_staff_interactions(parameters)
+	contact_patterns = ng.get_staff_interactions(parameters)
 
 	p = Pool(processes=10)
 
 	for run in range(int(parameters['Runs'])):
-		#run_sim(run, parameters, interactions)
-		p.apply_async(run_sim, args=(run, parameters, interactions, ))
-	p.close()
-	p.join()
+		interactions = copy.deepcopy(contact_patterns)
+		print("Run:", run)
+		print("Before:",interactions[0].n_residents,interactions[1].n_residents,interactions[2].n_residents)
+		run_sim(run, parameters, interactions)
+		print("After:",interactions[0].n_residents,interactions[1].n_residents,interactions[2].n_residents)
+	# 	p.apply_async(run_sim, args=(run, parameters, interactions, ))
+	# p.close()
+	# p.join()
 	get_mean_se(parameters)
+	return interactions
 
-if __name__ == "__main__":
-	#def run():
-	np.seterr(all='raise')
-	start_time = time.time()
+# if __name__ == "__main__":
+# 	#def run():
+np.seterr(all='raise')
+start_time = time.time()
 
-	main('parameters.txt')
+cp = main('parameters.txt')
 
-	print("Run Time (seconds): " + str(time.time() - start_time))
-	print('Sims Done')
+print("Run Time (seconds): " + str(time.time() - start_time))
+print('Sims Done')

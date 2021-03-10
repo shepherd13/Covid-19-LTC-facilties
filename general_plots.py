@@ -3932,20 +3932,23 @@ import os
 
 df_mean_0 = pd.read_csv("Outputs_temp_staff_0%/mean.csv")
 df_mean_1 = pd.read_csv("Outputs_temp_staff_2%/mean.csv")
-df_mean_2 = pd.read_csv("Outputs_temp_staff_5%/mean.csv")
-df_mean_3 = pd.read_csv("Outputs_temp_staff_10%/mean.csv")
+df_mean_2 = pd.read_csv("Outputs_temp_staff_10%/mean.csv")
+df_mean_3 = pd.read_csv("Outputs_temp_staff_50%/mean.csv")
+df_mean_4 = pd.read_csv("Outputs_temp_staff_80%/mean.csv")
 CI0 = df_mean_0['Cumulative Infected']
 CI1 = df_mean_1['Cumulative Infected']
 CI2 = df_mean_2['Cumulative Infected']
 CI3 = df_mean_3['Cumulative Infected']
+CI4 = df_mean_4['Cumulative Infected']
 
-length = 90
+length = 120
 fig1 = plt.figure()
 
 plt.errorbar(range(0,length), CI0, label='Temp Staff 0%')
 plt.errorbar(range(0,length), CI1, label='Temp Staff 2%')
-plt.errorbar(range(0,length), CI2, label='Temp Staff 5%')
-plt.errorbar(range(0,length), CI3, label='Temp Staff 10%')
+plt.errorbar(range(0,length), CI2, label='Temp Staff 10%')
+plt.errorbar(range(0,length), CI3, label='Temp Staff 50%')
+plt.errorbar(range(0,length), CI4, label='Temp Staff 80%')
 
 plt.xlabel('Num Days', figure=fig1)
 plt.ylabel('Num People', figure=fig1)
