@@ -9,7 +9,7 @@ import time
 import copy
 
 import network_generator as ng
-from infection_transfer import ProbabilityPerInteraction, InitialInfection
+from infection_transfer import ProbabilityPerInteraction, InitialInfection, OutsideTransmission
 from disease_progression import Covid19_DiseaseProgression
 from collect_data import Collect_data
 from implement_policies import ReplacePeople
@@ -44,15 +44,25 @@ def get_output_directory(parameters):
 
 def run_sim(run, parameters, interactions):
 	days = int(parameters['Days'])
+
+	# Infection Transfer Models
 	ii = InitialInfection(parameters, interactions)
 	ppi = ProbabilityPerInteraction(parameters, interactions)
+	ot = OutsideTransmission(parameters, interactions)
+
+	# Disease Progression Model
 	dp = Covid19_DiseaseProgression(parameters, interactions)
+
+	# Data Collection
 	cd = Collect_data(days, interactions)
+
+	# Policy implementation
 	rp = ReplacePeople(parameters, interactions)
 
 	daily_infected = ii.transfer(0)
 	for day in range(days):
 		daily_infected += ppi.transfer(day)
+		daily_infected += ot.transfer(day)
 		dp.disease_progression(day)
 		cd.update_states(day, daily_infected)
 		rp.replace_dead_people(day)
@@ -65,28 +75,30 @@ def run_sim(run, parameters, interactions):
 def main(param_file):
 	parameters = get_parameters(param_file)
 	output = get_output_directory(parameters)
+
+	# Interaction Patterns generator
 	contact_patterns = ng.get_staff_interactions(parameters)
 
 	p = Pool(processes=10)
 
 	for run in range(int(parameters['Runs'])):
 		interactions = copy.deepcopy(contact_patterns)
-		print("Run:", run)
-		print("Before:",interactions[0].n_residents,interactions[1].n_residents,interactions[2].n_residents)
-		run_sim(run, parameters, interactions)
-		print("After:",interactions[0].n_residents,interactions[1].n_residents,interactions[2].n_residents)
-	# 	p.apply_async(run_sim, args=(run, parameters, interactions, ))
-	# p.close()
-	# p.join()
+		# print("Run:", run)
+		# print("Before:",interactions[0].n_residents,interactions[1].n_residents,interactions[2].n_residents)
+		# run_sim(run, parameters, interactions)
+		# print("After:",interactions[0].n_residents,interactions[1].n_residents,interactions[2].n_residents)
+		p.apply_async(run_sim, args=(run, parameters, interactions, ))
+	p.close()
+	p.join()
 	get_mean_se(parameters)
 	return interactions
 
-# if __name__ == "__main__":
-# 	#def run():
-np.seterr(all='raise')
-start_time = time.time()
+if __name__ == "__main__":
+	#def run():
+	np.seterr(all='raise')
+	start_time = time.time()
 
-cp = main('parameters.txt')
+	cp = main('parameters.txt')
 
-print("Run Time (seconds): " + str(time.time() - start_time))
-print('Sims Done')
+	print("Run Time (seconds): " + str(time.time() - start_time))
+	print('Sims Done')

@@ -1,16 +1,17 @@
-Output Directory: Outputs_temp_staff_2%
-Runs: 2
-Days: 120
+Output Directory: Outputs_temp_staff_0%
+Runs: 100
+Days: 180
 MALE_PERCENTAGE: 0.5
-TEMP_PERCENTAGE: 0.02
+TEMP_PERCENTAGE: 0.0
 CONTACTS_SS: 2
 CONTACTS_SR: 6
 CONTACTS_RS: 6
 CONTACTS_RR: 0
 Initial Infection Rate: 0.02
 Probability of infection per infectious contact: 0.02
-Asymptomatic Rate: 0.35
+Resident Asymptomatic Rate: 0.20
+Staff Asymptomatic Rate: 0.40
 Transmission rate type: static
-Outside Transmission Rate: 0.001
+Outside Transmission Rate: 0.005
 Daily baseline mortality rate: 0.001
 Daily covid mortality rate: 0.02

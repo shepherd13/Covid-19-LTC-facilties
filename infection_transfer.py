@@ -16,6 +16,8 @@ class InfectionTransfer:
 
 class InitialInfection(InfectionTransfer):
 	def transfer(self, day):
+		self.daily_residents_infected = 0
+		self.daily_staff_infected = 0
 		infection_rate = self.parameters['Initial Infection Rate']
 		for facility in range(len(self.matric)):
 			for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff):
@@ -66,25 +68,18 @@ class ProbabilityPerInteraction(InfectionTransfer):
 
 
 class OutsideTransmission(InfectionTransfer):
-	def transfer(self, day, matric, disease_state):	
-		transmission_rate_type = self.parameters['Transmission rate type']
-		if transmission_rate_type == 'static':
-			otr = self.parameters['Outside Transmission Rate'] * TOTAL_SUSCEPTIBLE_STAFF
-			while(otr > 0):
-				if otr > 1:
-					staff = self.find_random_susceptible_person(day, disease_state)
-					disease_state[day, staff] = 1   # infected, incubating
-					self.update_daily_infected(staff)
-				else:
-					if (random.choices([0, 1], [1.0 - otr, otr])[0] == 1):
-						staff = self.find_random_susceptible_person(day, disease_state)
-						disease_state[day, staff] = 1   # infected, incubating
-						#self.update_daily_infected(staff)
-				otr -= 1
-		return disease_state
+	def transfer(self, day):
+		self.daily_residents_infected = 0
+		self.daily_staff_infected = 0
+		infection_rate = self.parameters['Outside Transmission Rate']
+		for facility in range(len(self.matric)):
+			for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff):
+				if (self.matric[facility].people[staff].get_disease_state(day) == 0) and (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
+					self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
+					self.update_daily_infected(staff, facility)
 
-	def find_random_susceptible_person(self, day, facility):
-		while True:
-			person = random.choice(range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_staff))
-			if self.matric[facility].people[person].get_disease_state(day) == 0:
-				return person
+		for staff in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
+			if (self.matric[facility].people[staff].get_disease_state(day) == 0) and (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
+				self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
+				self.update_daily_infected(staff, facility)
+		return self.daily_residents_infected + self.daily_staff_infected

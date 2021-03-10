@@ -11,10 +11,10 @@ class Covid19_DiseaseProgression(DiseaseProgression):
 
 	def update_states(self, day, person, facility):
 		current_disease_state = self.matric[facility].people[person].get_disease_state(day)
+		person_type = self.matric[facility].people[person].class_name()
 
 		# Dies due to Age
-		if (self.matric[facility].people[person].class_name() == 'Resident') and \
-			(random.choices([0, 1], [1.0 - self.parameters['Daily baseline mortality rate'], self.parameters['Daily baseline mortality rate']])[0] == 1):
+		if (person_type == 'Resident') and (random.choices([0, 1], [1.0 - self.parameters['Daily baseline mortality rate'], self.parameters['Daily baseline mortality rate']])[0] == 1):
 			self.matric[facility].people[person].update_disease_state(day, -2)  # died
 
 		if current_disease_state > 0:
@@ -27,7 +27,7 @@ class Covid19_DiseaseProgression(DiseaseProgression):
 
 				if self.matric[facility].people[person].transmission_start == self.matric[facility].people[person].incub_end:
 					# roll if asymptomatic or symptomatic
-					if (random.choices([0, 1], [self.parameters['Asymptomatic Rate'], 1.0 - self.parameters['Asymptomatic Rate']])[0] == 1):
+					if (random.choices([0, 1], [self.parameters[person_type + ' Asymptomatic Rate'], 1.0 - self.parameters[person_type + ' Asymptomatic Rate']])[0] == 1):
 						self.matric[facility].people[person].update_disease_state(day, 3)  # symptomatic
 					else:
 						self.matric[facility].people[person].update_disease_state(day, 4)  # asymptomatic
@@ -37,7 +37,7 @@ class Covid19_DiseaseProgression(DiseaseProgression):
 				#if days_infected[person] >= incub_end[person]:
 				if self.matric[facility].people[person].days_infected >= self.matric[facility].people[person].incub_end:
 					self.matric[facility].people[person].infection_start = 1000
-					if (random.choices([0, 1], [self.parameters['Asymptomatic Rate'], 1.0 - self.parameters['Asymptomatic Rate']])[0] == 1):
+					if (random.choices([0, 1], [self.parameters[person_type + ' Asymptomatic Rate'], 1.0 - self.parameters[person_type + ' Asymptomatic Rate']])[0] == 1):
 						self.matric[facility].people[person].update_disease_state(day, 3) # symptomatic
 					else:
 						self.matric[facility].people[person].update_disease_state(day, 4) # asymptomatic
@@ -48,8 +48,7 @@ class Covid19_DiseaseProgression(DiseaseProgression):
 			# symptomatic
 			elif current_disease_state == 3:
 				# Dies due to Covid19
-				if (self.matric[facility].people[person].class_name() == 'Resident') and \
-				(random.choices([0, 1], [1.0 - self.parameters['Daily covid mortality rate'], self.parameters['Daily covid mortality rate']])[0] == 1):
+				if (person_type == 'Resident') and (random.choices([0, 1], [1.0 - self.parameters['Daily covid mortality rate'], self.parameters['Daily covid mortality rate']])[0] == 1):
 					self.matric[facility].people[person].update_disease_state(day, -2)  # died
 				# if infection over
 				if (self.matric[facility].people[person].days_infected - self.matric[facility].people[person].transmission_start) >= self.matric[facility].people[person].transmission_end:

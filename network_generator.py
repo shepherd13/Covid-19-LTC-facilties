@@ -40,7 +40,7 @@ def generate_facility(residents, staff, total_temp_staff, parameters):
 	return people, residents, p_staff, t_staff
 
 def get_staff_interactions(parameters):
-	FACILITIES = [[100, 100, 101, 'A', 'Public'],[100, 100, 102, 'A', 'Public'],[100, 100, 103, 'A', 'Public']]
+	FACILITIES = [[100, 100, 101, 'A', 'Public']]#,[100, 100, 102, 'A', 'Public'],[100, 100, 103, 'A', 'Public']]
 	parameters['Facilities'] = FACILITIES
 	facilities = []
 	total_temp_staff = get_temporary_workers(parameters)

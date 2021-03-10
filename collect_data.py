@@ -15,7 +15,8 @@ class Collect_data:
 		self.recovered = [0] * self.days
 		self.dead = [0] * self.days
 
-	def record_states(self, day, current_disease_state):
+	def record_states(self, day, person, facility):
+		current_disease_state = self.matric[facility].people[person].get_disease_state(day)
 		if(current_disease_state == 0):
 			self.susceptible[day] += 1
 
@@ -38,7 +39,8 @@ class Collect_data:
 			self.infected[day] += 1
 
 		elif(current_disease_state == -1):
-			self.recovered[day] += 1
+			if self.matric[facility].people[person].get_disease_state(day-1) != -1:
+				self.recovered[day] += 1
 
 		elif(current_disease_state == -2):
 			self.dead[day] += 1
@@ -47,7 +49,7 @@ class Collect_data:
 		for facility in range(len(self.matric)):
 			for person in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff):
 				current_disease_state = self.matric[facility].people[person].get_disease_state(day)
-				self.record_states(day, current_disease_state)
+				self.record_states(day, person, facility)
 				# set states for next day
 				if (day + 1) != self.days:
 					self.matric[facility].people[person].update_disease_state(day + 1, current_disease_state)
@@ -55,7 +57,7 @@ class Collect_data:
 
 		for person in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
 				current_disease_state = self.matric[facility].people[person].get_disease_state(day)
-				self.record_states(day, current_disease_state)
+				self.record_states(day, person, facility)
 				# set states for next day
 				if (day + 1) != self.days:
 					self.matric[facility].people[person].update_disease_state(day + 1, current_disease_state)
@@ -64,6 +66,7 @@ class Collect_data:
 		self.cumulative_infected[day] = daily_infected
 		if day > 0:
 			self.cumulative_infected[day] += self.cumulative_infected[day-1]
+			self.recovered[day] += self.recovered[day-1]
 
 
 	def update_csv(self, export_file):
