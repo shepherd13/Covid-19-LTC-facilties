@@ -1,4 +1,5 @@
 import csv
+import numpy as np
 
 class Collect_data:
 	def __init__(self, days, matric):
@@ -13,6 +14,8 @@ class Collect_data:
 		self.symptomatic = [0] * self.days
 		self.asymptomatic = [0] * self.days
 		self.recovered = [0] * self.days
+		self.residents_recovered = [0] * self.days
+		self.staff_recovered = [0] * self.days
 		self.dead = [0] * self.days
 
 	def record_states(self, day, person, facility):
@@ -40,6 +43,10 @@ class Collect_data:
 
 		elif(current_disease_state == -1):
 			if self.matric[facility].people[person].get_disease_state(day-1) != -1:
+				if self.matric[facility].people[person].class_name() == 'Resident':
+					self.residents_recovered[day] += 1
+				else:
+					self.staff_recovered[day] += 1
 				self.recovered[day] += 1
 
 		elif(current_disease_state == -2):
@@ -62,11 +69,13 @@ class Collect_data:
 				if (day + 1) != self.days:
 					self.matric[facility].people[person].update_disease_state(day + 1, current_disease_state)
 
-		self.daily_infected[day] = daily_infected
-		self.cumulative_infected[day] = daily_infected
+		self.daily_infected[day] = np.sum(daily_infected)
+		self.cumulative_infected[day] = np.sum(daily_infected)
 		if day > 0:
 			self.cumulative_infected[day] += self.cumulative_infected[day-1]
 			self.recovered[day] += self.recovered[day-1]
+			self.residents_recovered[day] += self.residents_recovered[day-1]
+			self.staff_recovered[day] += self.staff_recovered[day-1]
 
 
 	def update_csv(self, export_file):
@@ -86,6 +95,8 @@ class Collect_data:
 			l.append('Symptomatic')
 			l.append('Asymptomatic')
 			l.append('Recovered')
+			l.append('Residents Recovered')
+			l.append('Staff Recovered')
 			l.append('Dead')
 			writer.writerow(l)
 
@@ -102,6 +113,8 @@ class Collect_data:
 				l.append(self.symptomatic[i])
 				l.append(self.asymptomatic[i])
 				l.append(self.recovered[i])
+				l.append(self.residents_recovered[i])
+				l.append(self.staff_recovered[i])
 				l.append(self.dead[i])
 				writer.writerow(l)
 		f.close()

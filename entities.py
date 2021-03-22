@@ -17,23 +17,23 @@ class Facility:
 	def set_daily_contacts(self, day, contact_pattern):
 		self.daily_contacts[day] = contact_pattern
 
-	def update_contacts_when_person_die(self, person_id):
-		if person_id < self.n_residents:
-			replacement_id = self.n_residents
-		else:
-			print("STAFF DIED")
-			replacement_id = self.n_residents + self.n_staff
+	# def update_contacts_when_person_die(self, person_id):
+	# 	if person_id < self.n_residents:
+	# 		replacement_id = self.n_residents
+	# 	else:
+	# 		print("STAFF DIED")
+	# 		replacement_id = self.n_residents + self.n_staff
 
-		for day in range(7):
-			temp_matrix = np.insert(self.daily_contacts[day], replacement_id, np.zeros(self.daily_contacts[day].shape[0]), 1)
-			temp_matrix = np.insert(temp_matrix, replacement_id, np.zeros(temp_matrix.shape[1]), 0)
-			temp_matrix[[person_id, replacement_id]] = temp_matrix[[replacement_id, person_id]]
-			temp_matrix[:,[person_id, replacement_id]] = temp_matrix[:,[replacement_id, person_id]]
-			self.daily_contacts[day] = temp_matrix
-		gender = random.choices([0, 1], [self.parameters['MALE_PERCENTAGE'], 1 - self.parameters['MALE_PERCENTAGE']])[0]    #Male = 0, Female = 1
-		new_person = Resident(gender, self.parameters)
-		self.people = np.insert(self.people, self.n_residents, new_person)
-		self.n_residents += 1
+	# 	for day in range(7):
+	# 		temp_matrix = np.insert(self.daily_contacts[day], replacement_id, np.zeros(self.daily_contacts[day].shape[0]), 1)
+	# 		temp_matrix = np.insert(temp_matrix, replacement_id, np.zeros(temp_matrix.shape[1]), 0)
+	# 		temp_matrix[[person_id, replacement_id]] = temp_matrix[[replacement_id, person_id]]
+	# 		temp_matrix[:,[person_id, replacement_id]] = temp_matrix[:,[replacement_id, person_id]]
+	# 		self.daily_contacts[day] = temp_matrix
+	# 	gender = random.choices([0, 1], [self.parameters['MALE_PERCENTAGE'], 1 - self.parameters['MALE_PERCENTAGE']])[0]    #Male = 0, Female = 1
+	# 	new_person = Resident(gender, self.parameters)
+	# 	self.people = np.insert(self.people, self.n_residents, new_person)
+	# 	self.n_residents += 1
 
 class Person:
 	def __init__(self, parameters):

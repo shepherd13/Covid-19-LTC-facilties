@@ -15,3 +15,4 @@ Transmission rate type: static
 Outside Transmission Rate: 0.005
 Daily baseline mortality rate: 0.001
 Daily covid mortality rate: 0.02
+Quarantine Location Infecion Rate: 0.02

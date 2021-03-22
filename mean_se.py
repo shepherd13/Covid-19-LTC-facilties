@@ -7,7 +7,7 @@ import scipy
 from scipy import stats
 import matplotlib.pyplot as plt
 
-def updateCSV2(export, sus, inf, cumInf, dailyInf, inc, trans, sym, asym, rec, dead):
+def updateCSV2(export, sus, inf, cumInf, dailyInf, inc, trans, sym, asym, rec, resrec, stafrec, dead):
     with open(export, 'w', newline='') as f:
         writer = csv.writer(f)
 
@@ -22,6 +22,8 @@ def updateCSV2(export, sus, inf, cumInf, dailyInf, inc, trans, sym, asym, rec, d
         l.append('Symptomatic')
         l.append('Asymptomatic')
         l.append('Recovered')
+        l.append('Residents Recovered')
+        l.append('Staff Recovered')
         l.append('Dead')
         writer.writerow(l)
 
@@ -37,6 +39,8 @@ def updateCSV2(export, sus, inf, cumInf, dailyInf, inc, trans, sym, asym, rec, d
             l.append(sym[i])
             l.append(asym[i])
             l.append(rec[i])
+            l.append(resrec[i])
+            l.append(stafrec[i])
             l.append(dead[i])
             writer.writerow(l)
 
@@ -62,6 +66,8 @@ def get_mean_se(parameters):
     SymMat = []
     AsymMat = []
     RecMat = []
+    ResRecMat = []
+    StafRecMat = []
     DeadMat = []
 
     for elem in List:
@@ -74,6 +80,8 @@ def get_mean_se(parameters):
         SymMat.append(elem['Symptomatic'].tolist())
         AsymMat.append(elem['Asymptomatic'].tolist())
         RecMat.append(elem['Recovered'].tolist())
+        ResRecMat.append(elem['Residents Recovered'].tolist())
+        StafRecMat.append(elem['Staff Recovered'].tolist())
         DeadMat.append(elem['Dead'].tolist())
 
 
@@ -86,6 +94,8 @@ def get_mean_se(parameters):
     SymMat = np.column_stack(tuple(SymMat))
     AsymMat = np.column_stack(tuple(AsymMat))
     RecMat = np.column_stack(tuple(RecMat))
+    ResRecMat = np.column_stack(tuple(ResRecMat))
+    StafRecMat = np.column_stack(tuple(StafRecMat))
     DeadMat = np.column_stack(tuple(DeadMat))
     
 
@@ -98,6 +108,8 @@ def get_mean_se(parameters):
     SymMat = SymMat.transpose()
     AsymMat = AsymMat.transpose()
     RecMat = RecMat.transpose()
+    ResRecMat = ResRecMat.transpose()
+    StafRecMat = StafRecMat.transpose()
     DeadMat = DeadMat.transpose()
     
 
@@ -111,6 +123,8 @@ def get_mean_se(parameters):
     semSymMat = scipy.stats.sem(SymMat)
     semAsymMat = scipy.stats.sem(AsymMat)
     semRec = scipy.stats.sem(RecMat)
+    semResRec = scipy.stats.sem(ResRecMat)
+    semStafRec = scipy.stats.sem(StafRecMat)
     semDead = scipy.stats.sem(DeadMat)
 
 
@@ -124,11 +138,13 @@ def get_mean_se(parameters):
     meanSymMat = SymMat.mean(0)
     meanAsymMat = AsymMat.mean(0)
     meanRec = RecMat.mean(0)
+    meanResRec = ResRecMat.mean(0)
+    meanStafRec = StafRecMat.mean(0)
     meanDead = DeadMat.mean(0)
 
 
-    updateCSV2(directory + 'mean.csv', meanSus, meanInf, meanCumInf, meanDailyInf, meannum_incub, meanTransMat, meanSymMat, meanAsymMat, meanRec, meanDead)
-    updateCSV2(directory + 'se.csv', semSus, semInf, semCumInf, semDailyInf, semnum_incub, semTransMat, semSymMat, semAsymMat, semRec, semDead)
+    updateCSV2(directory + 'mean.csv', meanSus, meanInf, meanCumInf, meanDailyInf, meannum_incub, meanTransMat, meanSymMat, meanAsymMat, meanRec, meanResRec, meanStafRec, meanDead)
+    updateCSV2(directory + 'se.csv', semSus, semInf, semCumInf, semDailyInf, semnum_incub, semTransMat, semSymMat, semAsymMat, semRec, semResRec, semStafRec, semDead)
     #updateCSV2(directory + title + '_se.csv', semSus, semInf, semCumInf, semDailyInf, semnum_incub, semAsymMat, semSymMat,
     #    semRec, semDead, semDailyDead, semHosp, sembreathMat, semrespMat, semicuMat, semDailyTestedMat, semSpreaderMat, semQuarantinedMat,
     #    semSymptomaticTestsMat, semContactTraceTestsMat, semExtraTestsMat, semPositive_SymptomaticTestsMat, semPositive_ContactTraceTestsMat, semPositive_ExtraTestsMat)

@@ -3934,21 +3934,31 @@ df_mean_0 = pd.read_csv("Outputs_temp_staff_0%/mean.csv")
 df_mean_1 = pd.read_csv("Outputs_temp_staff_2%/mean.csv")
 df_mean_2 = pd.read_csv("Outputs_temp_staff_10%/mean.csv")
 df_mean_3 = pd.read_csv("Outputs_temp_staff_50%/mean.csv")
-df_mean_4 = pd.read_csv("Outputs_temp_staff_80%/mean.csv")
+
+df_se_0 = pd.read_csv("Outputs_temp_staff_0%/se.csv")
+df_se_1 = pd.read_csv("Outputs_temp_staff_2%/se.csv")
+df_se_2 = pd.read_csv("Outputs_temp_staff_10%/se.csv")
+df_se_3 = pd.read_csv("Outputs_temp_staff_50%/se.csv")
+# df_mean_4 = pd.read_csv("Outputs_temp_staff_80%/mean.csv")
 CI0 = df_mean_0['Cumulative Infected']
 CI1 = df_mean_1['Cumulative Infected']
 CI2 = df_mean_2['Cumulative Infected']
 CI3 = df_mean_3['Cumulative Infected']
-CI4 = df_mean_4['Cumulative Infected']
 
-length = 120
+CI0_se = df_se_0['Cumulative Infected']
+CI1_se = df_se_1['Cumulative Infected']
+CI2_se = df_se_2['Cumulative Infected']
+CI3_se = df_se_3['Cumulative Infected']
+# CI4 = df_mean_4['Cumulative Infected']
+
+length = 180
 fig1 = plt.figure()
 
-plt.errorbar(range(0,length), CI0, label='Temp Staff 0%')
-plt.errorbar(range(0,length), CI1, label='Temp Staff 2%')
-plt.errorbar(range(0,length), CI2, label='Temp Staff 10%')
-plt.errorbar(range(0,length), CI3, label='Temp Staff 50%')
-plt.errorbar(range(0,length), CI4, label='Temp Staff 80%')
+plt.errorbar(range(0,length), CI0, 1.96*CI0_se, label='Temp Staff 0%')
+plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='Temp Staff 2%')
+plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff 10%')
+plt.errorbar(range(0,length), CI3, 1.96*CI3_se, label='Temp Staff 50%')
+# plt.errorbar(range(0,length), CI4, label='Temp Staff 80%')
 
 plt.xlabel('Num Days', figure=fig1)
 plt.ylabel('Num People', figure=fig1)
@@ -3971,26 +3981,41 @@ fig1.savefig(title + '.png', bbox_inches='tight')
 
 
 
-# fig2 = plt.figure()
 
-# plt.errorbar(range(1,length+1), A_CWSP, ls='-.', c='grey', label='Actual weekly\ncumulative student\npositive test cases', marker='*', mfc='black', mec='black', ms=8, mew=1)
-# plt.errorbar(range(1,length+1), P_CWSP, 1.96*P_CWSP_SE, ls='-.', c='grey', label='Predicted weekly\ncumulative student\npositive test cases', marker='s', mfc='black', mec='black', ms=6, mew=1)
+# ##############################################################################################
+# #										LTC Plots 2 single
+# ##############################################################################################
+# import numpy as np
+# df_mean_0 = pd.read_csv("Outputs_temp_staff_0%/mean.csv")
+# df_se_0 = pd.read_csv("Outputs_temp_staff_0%/se.csv")
+# CI0 = df_mean_0['Residents Recovered']
+# CI0_se = df_se_0['Residents Recovered']
+# CI1 = df_mean_0['Staff Recovered']
+# CI1_se = df_se_0['Staff Recovered']
 
-# plt.xlabel('Number of Weeks', figure=fig2)
-# plt.ylabel('Cumulative Number of Infected Students', figure=fig2)
-# title = "Actual and Predicted weekly cumulative student positive test cases"
-# #plt.title(title)
+# length = 180
+# fig1 = plt.figure()
+
+# plt.errorbar(range(0,length), CI0, 1.96*CI0_se, color='blue',errorevery=5, label='Reproduced Cumulative Residents Recovered')
+# plt.errorbar(range(0,length), CI1, 1.96*CI1_se, ls='-.',color='blue',errorevery=5, label='Reproduced Cumulative Staff Recovered')
+
+# plt.xlabel('Num Days', figure=fig1)
+# plt.ylabel('Num People', figure=fig1)
+# title = "Cumulative Residents and Staff Recovered"
+# plt.title(title)
 # plt.grid(True)
+# plt.xticks(np.arange(0, 181, 30))
+# plt.yticks(np.arange(0, 101, 25))
 
-# plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
+# #plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
 
-# textstr = '\n'.join(['Ventilation Rate=4 air changes/hour',
-# 					'Quanta Rate=20 quanta/hour',
-# 					'Initial Infection=0.02% population',
-# 					'Testing=Symptomatic people'])
-# props = dict(boxstyle='round', facecolor='white', alpha=0.15)
-# plt.text(1.06, 0.05, textstr, transform=plt.gca().transAxes, bbox=props)
-# # fig2.set_figheight(8)
-# # fig2.set_figwidth(8)
+# # textstr = '\n'.join(['Ventilation Rate=4 air changes/hour',
+# # 					'Quanta Rate=20 quanta/hour',
+# # 					'Initial Infection=0.02% population',
+# # 					'Testing=Symptomatic people'])
+# # props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+# # plt.text(1.06, 0.05, textstr, transform=plt.gca().transAxes, bbox=props)
+# # fig1.set_figheight(8)
+# # fig1.set_figwidth(8)
 # #plt.show()
-# fig2.savefig(title + '.png', bbox_inches='tight')
+# fig1.savefig(title + '.png', bbox_inches='tight')
