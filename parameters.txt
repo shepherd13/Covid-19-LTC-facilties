@@ -1,6 +1,8 @@
 Output Directory: Outputs_temp_staff_0%
-Runs: 100
+Collect_Data_Facilitywise: 1
+Runs: 1000
 Days: 180
+Facilities: 2
 MALE_PERCENTAGE: 0.5
 TEMP_PERCENTAGE: 0.0
 CONTACTS_SS: 2
@@ -15,4 +17,4 @@ Transmission rate type: static
 Outside Transmission Rate: 0.005
 Daily baseline mortality rate: 0.001
 Daily covid mortality rate: 0.02
-Quarantine Location Infecion Rate: 0.02
+Quarantine Location Infecion Rate: 0.05

@@ -79,7 +79,7 @@ class GenerateNetwork:
 
 
 	def generate_interactions(self):
-		FACILITIES = [[100, 100, 101, 'A', 'Public'], [100, 100, 102, 'A', 'Public'],[100, 100, 103, 'A', 'Public']]
+		FACILITIES = [[100, 100, 101, 'A', 'Public'], [100, 100, 102, 'A', 'Public']]#,[100, 100, 103, 'A', 'Public']]
 		self.parameters['Facilities'] = FACILITIES
 		self.matric = []
 		self.generate_temporary_workers()

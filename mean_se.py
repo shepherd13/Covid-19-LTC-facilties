@@ -7,7 +7,7 @@ import scipy
 from scipy import stats
 import matplotlib.pyplot as plt
 
-def updateCSV2(export, sus, inf, cumInf, dailyInf, inc, trans, sym, asym, rec, resrec, stafrec, dead):
+def updateCSV2(export, sus, inf, cumInf, cumInfRes, cumInfStaff, dailyInf, dailyInfRes, dailyInfStaff, inc, trans, sym, asym, rec, resrec, stafrec, dead):
     with open(export, 'w', newline='') as f:
         writer = csv.writer(f)
 
@@ -16,7 +16,11 @@ def updateCSV2(export, sus, inf, cumInf, dailyInf, inc, trans, sym, asym, rec, r
         l.append('Susceptible')
         l.append('Infected')
         l.append('Cumulative Infected')
+        l.append('Cumulative Infected Residents')
+        l.append('Cumulative Infected Staff')
         l.append('Daily Infected')
+        l.append('Daily Infected Residents')
+        l.append('Daily Infected Staff')
         l.append('Incubating')
         l.append('Transmitting')
         l.append('Symptomatic')
@@ -33,7 +37,11 @@ def updateCSV2(export, sus, inf, cumInf, dailyInf, inc, trans, sym, asym, rec, r
             l.append(sus[i])
             l.append(inf[i])
             l.append(cumInf[i])
+            l.append(cumInfRes[i])
+            l.append(cumInfStaff[i])
             l.append(dailyInf[i])
+            l.append(dailyInfRes[i])
+            l.append(dailyInfStaff[i])
             l.append(inc[i])
             l.append(trans[i])
             l.append(sym[i])
@@ -44,23 +52,27 @@ def updateCSV2(export, sus, inf, cumInf, dailyInf, inc, trans, sym, asym, rec, r
             l.append(dead[i])
             writer.writerow(l)
 
-def get_mean_se(parameters):
-    directory = parameters['Output Directory']
+def get_mean_se(parameters, output_dir):
+    directory = output_dir
     length = parameters['Days']
     file_names = glob.glob(directory + "/*.csv")
 
     List = []
 
     for file in file_names:
-        if len(file.split('/')[1]) > 6:
-           continue
+        # if len(file.split('/')[1]) > 6:
+        #    continue
         df = pd.read_csv(file, skiprows=1)
         List.append(df)
 
     SusMat = []
     InfMat = []
     CumInfMat = []
+    CumInfResMat = []
+    CumInfStaffMat = []
     DailyInfMat = []
+    DailyInfResMat = []
+    DailyInfStaffMat = []
     num_incub = []
     TransMat = []
     SymMat = []
@@ -74,7 +86,11 @@ def get_mean_se(parameters):
         SusMat.append(elem['Susceptible'].tolist())
         InfMat.append(elem['Infected'].tolist())
         CumInfMat.append(elem['Cumulative Infected'].tolist())
+        CumInfResMat.append(elem['Cumulative Infected Residents'].tolist())
+        CumInfStaffMat.append(elem['Cumulative Infected Staff'].tolist())
         DailyInfMat.append(elem['Daily Infected'].tolist())
+        DailyInfResMat.append(elem['Daily Infected Residents'].tolist())
+        DailyInfStaffMat.append(elem['Daily Infected Staff'].tolist())
         num_incub.append(elem['Incubating'].tolist())
         TransMat.append(elem['Transmitting'].tolist())
         SymMat.append(elem['Symptomatic'].tolist())
@@ -88,7 +104,11 @@ def get_mean_se(parameters):
     SusMat = np.column_stack(tuple(SusMat))
     InfMat = np.column_stack(tuple(InfMat))
     CumInfMat = np.column_stack(tuple(CumInfMat))
+    CumInfResMat = np.column_stack(tuple(CumInfResMat))
+    CumInfStaffMat = np.column_stack(tuple(CumInfStaffMat))
     DailyInfMat = np.column_stack(tuple(DailyInfMat))
+    DailyInfResMat = np.column_stack(tuple(DailyInfResMat))
+    DailyInfStaffMat = np.column_stack(tuple(DailyInfStaffMat))
     num_incub = np.column_stack(tuple(num_incub))
     TransMat = np.column_stack(tuple(TransMat))
     SymMat = np.column_stack(tuple(SymMat))
@@ -102,7 +122,11 @@ def get_mean_se(parameters):
     SusMat = SusMat.transpose()
     InfMat = InfMat.transpose()
     CumInfMat = CumInfMat.transpose()
+    CumInfResMat = CumInfResMat.transpose()
+    CumInfStaffMat = CumInfStaffMat.transpose()
     DailyInfMat = DailyInfMat.transpose()
+    DailyInfResMat = DailyInfResMat.transpose()
+    DailyInfStaffMat = DailyInfStaffMat.transpose()
     num_incub = num_incub.transpose()
     TransMat = TransMat.transpose()
     SymMat = SymMat.transpose()
@@ -117,7 +141,11 @@ def get_mean_se(parameters):
     semSus = scipy.stats.sem(SusMat)
     semInf = scipy.stats.sem(InfMat)
     semCumInf = scipy.stats.sem(CumInfMat)
-    semDailyInf = scipy.stats.sem(DailyInfMat)
+    semCumInfRes = scipy.stats.sem(CumInfResMat)
+    semCumInfStaff = scipy.stats.sem(CumInfStaffMat)
+    semDailyInf = scipy.stats.sem(DailyInfResMat)
+    semDailyInfRes = scipy.stats.sem(DailyInfStaffMat)
+    semDailyInfStaff = scipy.stats.sem(DailyInfMat)
     semnum_incub = scipy.stats.sem(num_incub)
     semTransMat = scipy.stats.sem(TransMat)
     semSymMat = scipy.stats.sem(SymMat)
@@ -132,7 +160,11 @@ def get_mean_se(parameters):
     meanSus = SusMat.mean(0)
     meanInf = InfMat.mean(0)
     meanCumInf = CumInfMat.mean(0)
+    meanCumInfRes = CumInfResMat.mean(0)
+    meanCumInfStaff = CumInfStaffMat.mean(0)
     meanDailyInf = DailyInfMat.mean(0)
+    meanDailyInfRes = DailyInfResMat.mean(0)
+    meanDailyInfStaff = DailyInfStaffMat.mean(0)
     meannum_incub = num_incub.mean(0)
     meanTransMat = TransMat.mean(0)
     meanSymMat = SymMat.mean(0)
@@ -143,8 +175,8 @@ def get_mean_se(parameters):
     meanDead = DeadMat.mean(0)
 
 
-    updateCSV2(directory + 'mean.csv', meanSus, meanInf, meanCumInf, meanDailyInf, meannum_incub, meanTransMat, meanSymMat, meanAsymMat, meanRec, meanResRec, meanStafRec, meanDead)
-    updateCSV2(directory + 'se.csv', semSus, semInf, semCumInf, semDailyInf, semnum_incub, semTransMat, semSymMat, semAsymMat, semRec, semResRec, semStafRec, semDead)
+    updateCSV2(directory + 'mean.csv', meanSus, meanInf, meanCumInf, meanCumInfRes, meanCumInfStaff, meanDailyInf, meanDailyInfRes, meanDailyInfStaff, meannum_incub, meanTransMat, meanSymMat, meanAsymMat, meanRec, meanResRec, meanStafRec, meanDead)
+    updateCSV2(directory + 'se.csv', semSus, semInf, semCumInf, semCumInfRes, semCumInfStaff, semDailyInf, semDailyInfRes, semDailyInfStaff, semnum_incub, semTransMat, semSymMat, semAsymMat, semRec, semResRec, semStafRec, semDead)
     #updateCSV2(directory + title + '_se.csv', semSus, semInf, semCumInf, semDailyInf, semnum_incub, semAsymMat, semSymMat,
     #    semRec, semDead, semDailyDead, semHosp, sembreathMat, semrespMat, semicuMat, semDailyTestedMat, semSpreaderMat, semQuarantinedMat,
     #    semSymptomaticTestsMat, semContactTraceTestsMat, semExtraTestsMat, semPositive_SymptomaticTestsMat, semPositive_ContactTraceTestsMat, semPositive_ExtraTestsMat)

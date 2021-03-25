@@ -42,6 +42,11 @@ def get_output_directory(parameters):
 	os.mkdir(output)
 	parameters['Output Directory'] = str(output) + '/'
 
+	if parameters['Collect_Data_Facilitywise'] == 1:
+		for f in range(int(parameters['Facilities'])):
+			os.mkdir(parameters['Output Directory'] + 'facility_' + str(f))
+
+
 def run_sim(run, parameters, network):
 	days = int(parameters['Days'])
 	interactions = network.matric
@@ -54,7 +59,7 @@ def run_sim(run, parameters, network):
 	dp = Covid19_DiseaseProgression(parameters, interactions)
 
 	# Data Collection
-	cd = Collect_data(days, interactions)
+	cd = Collect_data(parameters, network)
 
 	# Policy implementation
 	rp = Policies(parameters, interactions, network)
@@ -68,7 +73,7 @@ def run_sim(run, parameters, network):
 		rp.implement_policies(day)
 		daily_infected = []
 
-	export_file = parameters['Output Directory'] + str(run) + '.csv'
+	export_file = str(run) + '.csv'
 	cd.update_csv(export_file)
 
 
@@ -95,18 +100,26 @@ def main(param_file):
 		# print("After:",network.matric[0].n_residents,network.matric[1].n_residents,network.matric[2].n_residents)
 		# print("ISOLATED FACILITIES:", network.isolated_facilities)
 		p.apply_async(run_sim, args=(run, parameters, network, ))
-		# del network
+		#del network
 	p.close()
 	p.join()
-	get_mean_se(parameters)
+
+	if parameters['Collect_Data_Facilitywise'] == 0:
+		get_mean_se(parameters, parameters['Output Directory'])
+	else:
+		#for f in range(int(parameters['Facilities'])):
+		for f in range(len(gn.matric)):
+			# print(parameters['Output Directory'] + 'facility_' + str(f) + '/')
+			get_mean_se(parameters, parameters['Output Directory'] + 'facility_' + str(f) + '/')
+
 	return gn
 
-if __name__ == "__main__":
-#def run():
-	np.seterr(all='raise')
-	start_time = time.time()
+# if __name__ == "__main__":
+# #def run():
+np.seterr(all='raise')
+start_time = time.time()
 
-	cp = main('parameters.txt')
+cp = main('parameters.txt')
 
-	print("Run Time (seconds): " + str(time.time() - start_time))
-	print('Sims Done')
+print("Run Time (seconds): " + str(time.time() - start_time))
+print('Sims Done')

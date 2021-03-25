@@ -2,24 +2,24 @@ import numpy as np
 import random
 
 class InfectionTransfer:
-	daily_residents_infected = 0
-	daily_staff_infected = 0
 	def __init__(self, parameters, matric):
 		self.parameters = parameters
 		self.matric = matric
+		self.daily_residents_infected = [0] * len(self.matric)
+		self.daily_staff_infected = [0] * len(self.matric)
 
 	def update_daily_infected(self, person_index, facility):
 		if(person_index < self.matric[facility].n_residents):
-			self.daily_residents_infected += 1
+			self.daily_residents_infected[facility] += 1
 		else:
-			self.daily_staff_infected += 1
+			self.daily_staff_infected[facility] += 1
 
 class InitialInfection(InfectionTransfer):
 	def transfer(self, day):
 		total_infected = 0
 		while(total_infected < 2):
-			self.daily_residents_infected = 0
-			self.daily_staff_infected = 0
+			self.daily_residents_infected = [0] * len(self.matric)
+			self.daily_staff_infected = [0] * len(self.matric)
 			infection_rate = self.parameters['Initial Infection Rate']
 			for facility in range(1):#range(len(self.matric)):
 				for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff):
@@ -31,14 +31,16 @@ class InitialInfection(InfectionTransfer):
 				if (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
 					self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
 					self.update_daily_infected(staff, facility)
-			total_infected = self.daily_residents_infected + self.daily_staff_infected
+
+			for facility in range(1):
+				total_infected = self.daily_residents_infected[facility] + self.daily_staff_infected[facility]
 		return [(self.daily_residents_infected, self.daily_staff_infected)]
 
 
 class ProbabilityPerInteraction(InfectionTransfer):
 	def transfer(self, day):
-		self.daily_residents_infected = 0
-		self.daily_staff_infected = 0
+		self.daily_residents_infected = [0] * len(self.matric)
+		self.daily_staff_infected = [0] * len(self.matric)
 		for fac in range(len(self.matric)):
 			for staff in range(self.matric[fac].n_residents, self.matric[fac].n_residents + self.matric[fac].n_staff):
 				coords = self.matric[fac].daily_contacts[day%7][staff].nonzero()[0]
@@ -72,8 +74,8 @@ class ProbabilityPerInteraction(InfectionTransfer):
 
 class OutsideTransmission(InfectionTransfer):
 	def transfer(self, day):
-		self.daily_residents_infected = 0
-		self.daily_staff_infected = 0
+		self.daily_residents_infected = [0] * len(self.matric)
+		self.daily_staff_infected = [0] * len(self.matric)
 		infection_rate = self.parameters['Outside Transmission Rate']
 		for facility in range(len(self.matric)):
 			for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff):

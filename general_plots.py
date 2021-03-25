@@ -3926,45 +3926,97 @@ import os
 
 
 
+# ##############################################################################################
+# #										LTC Plots
+# ##############################################################################################
+
+# df_mean_0 = pd.read_csv("Outputs_temp_staff_0%/mean.csv")
+# df_mean_1 = pd.read_csv("Outputs_temp_staff_2%/mean.csv")
+# df_mean_2 = pd.read_csv("Outputs_temp_staff_10%/mean.csv")
+# df_mean_3 = pd.read_csv("Outputs_temp_staff_50%/mean.csv")
+
+# df_se_0 = pd.read_csv("Outputs_temp_staff_0%/se.csv")
+# df_se_1 = pd.read_csv("Outputs_temp_staff_2%/se.csv")
+# df_se_2 = pd.read_csv("Outputs_temp_staff_10%/se.csv")
+# df_se_3 = pd.read_csv("Outputs_temp_staff_50%/se.csv")
+# # df_mean_4 = pd.read_csv("Outputs_temp_staff_80%/mean.csv")
+# CI0 = df_mean_0['Cumulative Infected']
+# CI1 = df_mean_1['Cumulative Infected']
+# CI2 = df_mean_2['Cumulative Infected']
+# CI3 = df_mean_3['Cumulative Infected']
+
+# CI0_se = df_se_0['Cumulative Infected']
+# CI1_se = df_se_1['Cumulative Infected']
+# CI2_se = df_se_2['Cumulative Infected']
+# CI3_se = df_se_3['Cumulative Infected']
+# # CI4 = df_mean_4['Cumulative Infected']
+
+# length = 180
+# fig1 = plt.figure()
+
+# plt.errorbar(range(0,length), CI0, 1.96*CI0_se, label='Temp Staff 0%')
+# plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='Temp Staff 2%')
+# plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff 10%')
+# plt.errorbar(range(0,length), CI3, 1.96*CI3_se, label='Temp Staff 50%')
+# # plt.errorbar(range(0,length), CI4, label='Temp Staff 80%')
+
+# plt.xlabel('Num Days', figure=fig1)
+# plt.ylabel('Num People', figure=fig1)
+# title = "Change in Cumulative infected people based on variable temporary staff"
+# plt.title(title)
+# plt.grid(True)
+
+# plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
+
+# # textstr = '\n'.join(['Ventilation Rate=4 air changes/hour',
+# # 					'Quanta Rate=20 quanta/hour',
+# # 					'Initial Infection=0.02% population',
+# # 					'Testing=Symptomatic people'])
+# # props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+# # plt.text(1.06, 0.05, textstr, transform=plt.gca().transAxes, bbox=props)
+# # fig1.set_figheight(8)
+# # fig1.set_figwidth(8)
+# #plt.show()
+# fig1.savefig(title + '.png', bbox_inches='tight')
+
+
+
+
 ##############################################################################################
-#										LTC Plots
+#										LTC Plots 2 single
 ##############################################################################################
+import numpy as np
+df0_mean_0 = pd.read_csv("Outputs_temp_staff_50%/facility_0/mean.csv")
+df1_mean_0 = pd.read_csv("Outputs_temp_staff_50%/facility_1/mean.csv")
 
-df_mean_0 = pd.read_csv("Outputs_temp_staff_0%/mean.csv")
-df_mean_1 = pd.read_csv("Outputs_temp_staff_2%/mean.csv")
-df_mean_2 = pd.read_csv("Outputs_temp_staff_10%/mean.csv")
-df_mean_3 = pd.read_csv("Outputs_temp_staff_50%/mean.csv")
+df0_se_0 = pd.read_csv("Outputs_temp_staff_50%/facility_0/se.csv")
+df1_se_0 = pd.read_csv("Outputs_temp_staff_50%/facility_0/se.csv")
 
-df_se_0 = pd.read_csv("Outputs_temp_staff_0%/se.csv")
-df_se_1 = pd.read_csv("Outputs_temp_staff_2%/se.csv")
-df_se_2 = pd.read_csv("Outputs_temp_staff_10%/se.csv")
-df_se_3 = pd.read_csv("Outputs_temp_staff_50%/se.csv")
-# df_mean_4 = pd.read_csv("Outputs_temp_staff_80%/mean.csv")
-CI0 = df_mean_0['Cumulative Infected']
-CI1 = df_mean_1['Cumulative Infected']
-CI2 = df_mean_2['Cumulative Infected']
-CI3 = df_mean_3['Cumulative Infected']
+CI0 = df0_mean_0['Cumulative Infected']
+CI1 = df0_mean_0['Cumulative Infected Residents']
+CI2 = df0_mean_0['Cumulative Infected Staff']
 
-CI0_se = df_se_0['Cumulative Infected']
-CI1_se = df_se_1['Cumulative Infected']
-CI2_se = df_se_2['Cumulative Infected']
-CI3_se = df_se_3['Cumulative Infected']
-# CI4 = df_mean_4['Cumulative Infected']
+CI3 = df1_mean_0['Cumulative Infected']
+CI4 = df1_mean_0['Cumulative Infected Residents']
+CI5 = df1_mean_0['Cumulative Infected Staff']
+
+# CI0_se = df0_se_0['Cumulative Infected Residents']
+# CI1_se = df1_se_0['Cumulative Infected Staff']
 
 length = 180
 fig1 = plt.figure()
 
-plt.errorbar(range(0,length), CI0, 1.96*CI0_se, label='Temp Staff 0%')
-plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='Temp Staff 2%')
-plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff 10%')
-plt.errorbar(range(0,length), CI3, 1.96*CI3_se, label='Temp Staff 50%')
-# plt.errorbar(range(0,length), CI4, label='Temp Staff 80%')
+plt.errorbar(range(0,length), CI0+CI3, label='Cumulative Infected')
+plt.errorbar(range(0,length), CI1+CI4, label='Cumulative Infected Residents')
+plt.errorbar(range(0,length), CI2+CI5, label='Cumulative Infected Staff')
 
 plt.xlabel('Num Days', figure=fig1)
 plt.ylabel('Num People', figure=fig1)
-title = "Change in Cumulative infected people based on variable temporary staff"
+title = "Cumulative infected when shared temp staff=50%"
 plt.title(title)
 plt.grid(True)
+plt.xticks(np.arange(0, 181, 30))
+#plt.yticks(np.arange(0, 101, 25))
 
 plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
 
@@ -3983,31 +4035,40 @@ fig1.savefig(title + '.png', bbox_inches='tight')
 
 
 # ##############################################################################################
-# #										LTC Plots 2 single
+# #										LTC Plots multiple facilities
 # ##############################################################################################
-# import numpy as np
-# df_mean_0 = pd.read_csv("Outputs_temp_staff_0%/mean.csv")
-# df_se_0 = pd.read_csv("Outputs_temp_staff_0%/se.csv")
-# CI0 = df_mean_0['Residents Recovered']
-# CI0_se = df_se_0['Residents Recovered']
-# CI1 = df_mean_0['Staff Recovered']
-# CI1_se = df_se_0['Staff Recovered']
+
+# df_mean_0 = pd.read_csv("Outputs_temp_staff_10%/facility_0/mean.csv")
+# df_mean_1 = pd.read_csv("Outputs_temp_staff_10%/facility_1/mean.csv")
+# df_mean_2 = pd.read_csv("Outputs_temp_staff_10%/facility_2/mean.csv")
+
+# df_se_0 = pd.read_csv("Outputs_temp_staff_10%/facility_0/se.csv")
+# df_se_1 = pd.read_csv("Outputs_temp_staff_10%/facility_1/se.csv")
+# df_se_2 = pd.read_csv("Outputs_temp_staff_10%/facility_2/se.csv")
+
+# CI0 = df_mean_0['Cumulative Infected']
+# CI1 = df_mean_1['Cumulative Infected']
+# CI2 = df_mean_2['Cumulative Infected']
+
+# CI0_se = df_se_0['Cumulative Infected']
+# CI1_se = df_se_1['Cumulative Infected']
+# CI2_se = df_se_2['Cumulative Infected']
 
 # length = 180
 # fig1 = plt.figure()
 
-# plt.errorbar(range(0,length), CI0, 1.96*CI0_se, color='blue',errorevery=5, label='Reproduced Cumulative Residents Recovered')
-# plt.errorbar(range(0,length), CI1, 1.96*CI1_se, ls='-.',color='blue',errorevery=5, label='Reproduced Cumulative Staff Recovered')
+# plt.errorbar(range(0,length), CI0, 1.96*CI0_se, label='Facility 1')
+# plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='Facility 2')
+# plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Facility 3')
+# # plt.errorbar(range(0,length), CI4, label='Temp Staff 810%')
 
 # plt.xlabel('Num Days', figure=fig1)
 # plt.ylabel('Num People', figure=fig1)
-# title = "Cumulative Residents and Staff Recovered"
+# title = "Cumulative infected people in different facilities when temporary staff = 10%"
 # plt.title(title)
 # plt.grid(True)
-# plt.xticks(np.arange(0, 181, 30))
-# plt.yticks(np.arange(0, 101, 25))
 
-# #plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
+# plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
 
 # # textstr = '\n'.join(['Ventilation Rate=4 air changes/hour',
 # # 					'Quanta Rate=20 quanta/hour',
@@ -4019,3 +4080,117 @@ fig1.savefig(title + '.png', bbox_inches='tight')
 # # fig1.set_figwidth(8)
 # #plt.show()
 # fig1.savefig(title + '.png', bbox_inches='tight')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import pandas as pd
+# import matplotlib.cm as cm
+# import numpy as np
+# import matplotlib.pyplot as plt
+
+# def plot_clustered_stacked(dfall, labels=None, title="Cumulative infected people in different facilities with varying temporary staff when infection starts in facility 1",  H="/", **kwargs):
+# 	"""Given a list of dataframes, with identical columns and index, create a clustered stacked bar plot. 
+# 	labels is a list of the names of the dataframe, used for the legend
+# 	title is a string for the title of the plot
+# 	H is the hatch used for identification of the different dataframe"""
+
+# 	n_df = len(dfall)
+# 	n_col = len(dfall[0].columns) 
+# 	n_ind = len(dfall[0].index)
+# 	axe = plt.subplot(111)
+
+# 	for df in dfall : # for each data frame
+# 		axe = df.plot(kind="bar",
+# 					linewidth=0,
+# 					stacked=True,
+# 					ax=axe,
+# 					legend=False,
+# 					grid=False,
+# 					**kwargs)  # make bar plots
+
+# 	h,l = axe.get_legend_handles_labels() # get the handles we want to modify
+# 	for i in range(0, n_df * n_col, n_col): # len(h) = n_col * n_df
+# 		for j, pa in enumerate(h[i:i+n_col]):
+# 			for rect in pa.patches: # for each index
+# 				rect.set_x(rect.get_x() + 1 / float(n_df + 1) * i / float(n_col))
+# 				rect.set_hatch(H * int(i / n_col)) #edited part     
+# 				rect.set_width(1 / float(n_df + 1))
+
+# 	axe.set_xticks((np.arange(0, 2 * n_ind, 2) + 1 / float(n_df + 1)) / 2.)
+# 	axe.set_xticklabels(df.index, rotation = 0)
+# 	axe.set_xlabel('Num Days')
+# 	axe.set_ylabel('Cumulative Infected People')
+# 	axe.set_title(title)
+
+#     # Add invisible data to add another legend
+# 	n=[]        
+# 	for i in range(n_df):
+# 		n.append(axe.bar(0, 0, color="gray", hatch=H * i))
+
+# 	l1 = axe.legend(h[:n_col], l[:n_col], loc=[1.01, 0.5])
+# 	if labels is not None:
+# 		l2 = plt.legend(n, labels, loc=[1.01, 0.1]) 
+# 	axe.add_artist(l1)
+# 	#plt.show()
+	
+# 	fig = axe.get_figure()
+# 	# fig.set_figheight(8)
+# 	# fig.set_figwidth(8)
+# 	fig.savefig(title + '.png', bbox_inches='tight')
+# 	#axe.savefig(title + '.png', bbox_inches='tight')
+# 	return axe
+
+
+# df1_mean_0 = pd.read_csv("Outputs_temp_staff_0%/facility_0/mean.csv")['Cumulative Infected']
+# df1_mean_1 = pd.read_csv("Outputs_temp_staff_0%/facility_1/mean.csv")['Cumulative Infected']
+
+# df2_mean_0 = pd.read_csv("Outputs_temp_staff_2%/facility_0/mean.csv")['Cumulative Infected']
+# df2_mean_1 = pd.read_csv("Outputs_temp_staff_2%/facility_1/mean.csv")['Cumulative Infected']
+
+# df3_mean_0 = pd.read_csv("Outputs_temp_staff_10%/facility_0/mean.csv")['Cumulative Infected']
+# df3_mean_1 = pd.read_csv("Outputs_temp_staff_10%/facility_1/mean.csv")['Cumulative Infected']
+
+# df4_mean_0 = pd.read_csv("Outputs_temp_staff_50%/facility_0/mean.csv")['Cumulative Infected']
+# df4_mean_1 = pd.read_csv("Outputs_temp_staff_50%/facility_1/mean.csv")['Cumulative Infected']
+
+
+# def get_matrix(ts):
+# 	mat = []
+# 	df_mean_0 = pd.read_csv("Outputs_temp_staff_"+ts+"/facility_0/mean.csv")['Cumulative Infected']
+# 	df_mean_1 = pd.read_csv("Outputs_temp_staff_"+ts+"/facility_1/mean.csv")['Cumulative Infected']
+# 	for day in [30,60,90,120,150,180]:
+# 		row = [df_mean_0[day-1], df_mean_1[day-1]]
+# 		mat.append(row)
+# 	return mat
+
+# # create fake dataframes
+# df1 = pd.DataFrame(get_matrix("0%"),
+# 					index=["30", "60", "90", "120", "150", "180"],
+# 					columns=["Facility 1", "Facility 2"])
+# df2 = pd.DataFrame(get_matrix("2%"),
+# 					index=["30", "60", "90", "120", "150", "180"],
+# 					columns=["Facility 1", "Facility 2"])
+# df3 = pd.DataFrame(get_matrix("10%"),
+# 					index=["30", "60", "90", "120", "150", "180"], 
+# 					columns=["Facility 1", "Facility 2"])
+# df4 = pd.DataFrame(get_matrix("50%"),
+# 					index=["30", "60", "90", "120", "150", "180"], 
+# 					columns=["Facility 1", "Facility 2"])
+
+# # Then, just call :
+# plot_clustered_stacked([df1, df2, df3, df4],["Temp Staff 0%", "Temp Staff 2%", "Temp Staff 10%", "Temp Staff 50%"])
