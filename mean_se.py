@@ -82,7 +82,15 @@ def get_mean_se(parameters, output_dir):
     StafRecMat = []
     DeadMat = []
 
+    # # Remove this part
+    # a = 0
+    # #################
+
+
     for elem in List:
+        # if elem['Cumulative Infected'].tolist()[-1] >= parameters['threshold']:
+        #     a += 1
+
         SusMat.append(elem['Susceptible'].tolist())
         InfMat.append(elem['Infected'].tolist())
         CumInfMat.append(elem['Cumulative Infected'].tolist())
@@ -100,6 +108,7 @@ def get_mean_se(parameters, output_dir):
         StafRecMat.append(elem['Staff Recovered'].tolist())
         DeadMat.append(elem['Dead'].tolist())
 
+    # print("Probability of intfection jump:", a/parameters['Runs'])
 
     SusMat = np.column_stack(tuple(SusMat))
     InfMat = np.column_stack(tuple(InfMat))

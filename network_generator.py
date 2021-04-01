@@ -42,10 +42,62 @@ class GenerateNetwork:
 		#plt.legend(['In-degree', 'Out-degree'])
 		plt.xlabel('Degree')
 		plt.ylabel('Number of nodes')
-		plt.title('Network of residents and staff in a facility')
+		plt.title('Degree Distribution of Network of residents and staff in a facility')
 		#plt.xlim([0, 2*10**2])
-		plt.savefig('Degree_Distribution.png')
+		plt.savefig('Degree_Distribution_1.png')
 		plt.close()
+
+		plt.figure()
+		degrees = np.sum(adjacency_matrix, 0)
+		num_bins = 10
+		n, bins, patches = plt.hist(degrees, num_bins, facecolor='blue', alpha=0.5)
+		plt.xticks(np.arange(0, 9, 1))
+		plt.xlabel('Degree')
+		plt.ylabel('Number of nodes')
+		plt.title('Degree Distribution of Network of residents and staff in a facility')
+		plt.savefig('Degree_Distribution_2.png')
+		plt.close()
+
+
+	def generate_random_network(self):
+		FACILITIES = [[100, 100, 101, 'A', 'Public']]
+		self.parameters['Facilities'] = FACILITIES
+		self.matric = []
+		self.generate_temporary_workers()
+		for fac in self.parameters['Facilities']:
+			people, residents, p_staff, t_staff = self.generate_facility(fac[0], fac[1])
+			f = Facility(self.parameters, people, p_staff, t_staff, *fac)
+			self.matric.append(f)
+
+
+		for day in range(7):
+			#print(day)
+			#pool_temps = list(range(f.n_residents + f.n_p_staff, f.n_residents + f.n_staff))
+			pool_temps = np.ones(len(self.temp_staff))
+			for f in self.matric:
+				daily_contacts = np.zeros([f.n_residents + f.n_staff, f.n_residents + f.n_staff])
+				temp_workers = []
+				for i in range(f.n_t_staff):
+					ind = random.choice(pool_temps.nonzero()[0])
+					pool_temps[ind] = 0
+					temp_workers.append(f.n_residents+f.n_p_staff+ind)
+				todays_staff = list(range(f.n_residents+f.n_staff))
+
+				staff_available = copy.deepcopy(todays_staff)
+				for r in range(f.n_residents):
+					staff_contacts = 0
+					while(staff_contacts != 6):
+						if len(staff_available) == 0:
+							break
+						sc = random.choice(staff_available)
+						if sc != r:
+							daily_contacts[r,sc] += 1
+							daily_contacts[sc,r] += 1
+							staff_contacts += 1
+							if sum(daily_contacts[sc]) >= 6:
+								staff_available.remove(sc)
+				f.set_daily_contacts(day, daily_contacts)
+
 
 	def generate_temporary_workers(self):
 		for fac in self.parameters['Facilities']:
