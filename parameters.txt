@@ -1,10 +1,10 @@
-Output Directory: Outputs_temp_staff_50%
+Output Directory: Outputs_temp_staff_10%
 Collect_Data_Facilitywise: 1
-Runs: 100
+Runs: 1000
 Days: 180
 Facilities: 2
 MALE_PERCENTAGE: 0.5
-TEMP_PERCENTAGE: 0.5
+TEMP_PERCENTAGE: 0.1
 CONTACTS_SS: 2
 CONTACTS_SR: 6
 CONTACTS_RS: 6
@@ -19,8 +19,8 @@ Daily baseline mortality rate: 0.001
 Daily covid mortality rate: 0.02
 Quarantine Location Infecion Rate: 0.05
 Policy Start Testing: -1
-Test Frequency: 7
+Test Frequency: 1
 Test Result turnaround time: 1
 False Positive Rate: 0.00
-False Negative Rate: 0.033
+False Negative Rate: 0.00
 threshold: 30

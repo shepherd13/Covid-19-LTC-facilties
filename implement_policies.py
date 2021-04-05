@@ -7,50 +7,57 @@ class Policies:
 		self.matric = matric
 		self.network = network
 
-	def implement_policies(self,day):
-		self.replace_dead_people(day)
-		self.quarantine_facility(day)
-		if day > self.parameters['Policy Start Testing']:
-			self.testing(day)
-
-	def replace_dead_people(self, day):
+	def implement_policies(self, day):
 		for facility in range(len(self.matric)):
-			for person in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff):
-				current_disease_state = self.matric[facility].people[person].get_disease_state(day)
-				if current_disease_state == -2 and self.matric[facility].people[person].get_disease_state(day-1) != -2:
-					self.network.update_contacts_when_person_die(facility, person)
+			facility_positive_cases = 0
+			# Residents
+			for person in range(self.matric[facility].n_residents):
+				self.replace_dead_people(day, person, facility)
+				if day > self.parameters['Policy Start Testing']:
+					self.testing(day, person, facility)
+				if self.matric[facility].people[person].get_disease_state(day) in [2,3,4]: #.get_valid_test_state(day) == 1:
+					facility_positive_cases += 1
 
-		# for person in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
-		# 		current_disease_state = self.matric[facility].people[person].get_disease_state(day)
-		# 		self.record_states(day, current_disease_state)
+			# Permanent Staff members
+			for person in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff):
+				self.replace_dead_people(day, person, facility)
+				#self.replace_infected_staff(day, person, facility)
+				if day > self.parameters['Policy Start Testing']:
+					self.testing(day, person, facility)
+				if self.matric[facility].people[person].get_disease_state(day) in [2,3,4]: #get_valid_test_state(day) == 1:
+					facility_positive_cases += 1
 
-	def quarantine_facility(self, day):
-		for facility in range(len(self.matric)):
-			if facility not in self.network.isolated_facilities:
-				total_infected = 0
-				for person in range(self.matric[facility].n_residents+self.matric[facility].n_p_staff):
-					if self.matric[facility].people[person].get_valid_test_state(day) == 1:
-						total_infected += 1
+			# Temporary Staff members(visiting the facility that "day")
+			for person in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
+				if (np.sum(self.matric[facility].daily_contacts[day%7][person]) > 0):
+					self.replace_dead_people(day, person, facility)
+					#self.replace_infected_staff(day, person, facility)
+					if day > self.parameters['Policy Start Testing']:
+						self.testing(day, person, facility)
+					if self.matric[facility].people[person].get_disease_state(day) in [2,3,4]: #get_valid_test_state(day) == 1:
+						facility_positive_cases += 1
 
-				for person in range(self.matric[facility].n_residents+self.matric[facility].n_p_staff, self.matric[facility].n_residents+self.matric[facility].n_staff):
-					if (np.sum(self.matric[facility].daily_contacts[day%7][person]) > 0) and self.matric[facility].people[person].get_valid_test_state(day) == -1:
-						total_infected += 1
-
-				if total_infected/(self.matric[facility].n_residents+self.matric[facility].n_staff) > self.parameters['Quarantine Location Infecion Rate']:
+			if facility_positive_cases/(self.matric[facility].n_residents+self.matric[facility].n_staff) > self.parameters['Quarantine Location Infecion Rate']:
+				if facility not in self.network.isolated_facilities:
 					self.network.isolate_facility(facility)
+		
 
+	def replace_dead_people(self, day, person, facility):
+		current_disease_state = self.matric[facility].people[person].get_disease_state(day)
+		if current_disease_state == -2 and self.matric[facility].people[person].get_disease_state(day-1) != -2:
+			self.network.update_contacts_when_person_die(facility, person)
 
-	def testing(self, day):
-		for facility in range(len(self.matric)):
-			for person in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff):
-				if day - self.matric[facility].people[person].last_tested > self.parameters['Test Frequency']:
-					self.viral_testing(day, person, facility)
-					self.matric[facility].people[person].last_tested = day
+	#def replace_infected_staff(self, day, person, facility):
+	#	current_test_state = self.matric[facility].people[person].test_state
+	#	if current_test_state == 1:
+	#		self.network.update_contacts_when_staff_infected(facility, person)
 
-		for person in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
-			if day - self.matric[facility].people[person].last_tested > self.parameters['Test Frequency']:
-				self.viral_testing(day, person, facility)
+	def testing(self, day, person, facility):
+		if day - self.matric[facility].people[person].last_tested > self.parameters['Test Frequency']:
+			self.viral_testing(day, person, facility)
+			self.matric[facility].people[person].last_tested = day
 
+	# To add turnaround time we will need to save test_states daywise in an array
 	def viral_testing(self, day, person, facility):
 		cur_state = self.matric[facility].people[person].get_disease_state(day)
 		if cur_state in [0,1]:
@@ -58,3 +65,6 @@ class Policies:
 
 		elif cur_state in [2,3,4]:
 			self.matric[facility].people[person].test_state = random.choices([-1, 1], [self.parameters['False Negative Rate'], 1.0 - self.parameters['False Negative Rate']])[0]
+
+
+

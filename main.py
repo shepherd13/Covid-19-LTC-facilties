@@ -35,16 +35,16 @@ def get_output_directory(parameters):
 	base_path = Path(__file__).parent
 	output = base_path / parameters['Output Directory']
 	# remove dirctory if empty
-	try:
-		os.rmdir(output)
-	except OSError as ex:
-		pass
-	os.mkdir(output)
+	#try:
+	#	os.rmdir(output)
+	#except OSError as ex:
+	#	pass
+	#os.mkdir(output)
 	parameters['Output Directory'] = str(output) + '/'
 
-	if parameters['Collect_Data_Facilitywise'] == 1:
-		for f in range(int(parameters['Facilities'])):
-			os.mkdir(parameters['Output Directory'] + 'facility_' + str(f))
+	#if parameters['Collect_Data_Facilitywise'] == 1:
+	#	for f in range(int(parameters['Facilities'])):
+	#		os.mkdir(parameters['Output Directory'] + 'facility_' + str(f))
 
 
 def run_sim(run, parameters, network):
@@ -88,7 +88,7 @@ def main(param_file):
 	# 	gn.get_graph_properties(day)
 
 
-	p = Pool(processes=10)
+	p = Pool(processes=30)
 
 	for run in range(int(parameters['Runs'])):
 		#interactions = ng.get_staff_interactions(parameters)
@@ -114,12 +114,12 @@ def main(param_file):
 
 	return gn
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 # #def run():
-np.seterr(all='raise')
-start_time = time.time()
+	np.seterr(all='raise')
+	start_time = time.time()
 
-cp = main('parameters.txt')
+	cp = main('parameters.txt')
 
-print("Run Time (seconds): " + str(time.time() - start_time))
-print('Sims Done')
+	print("Run Time (seconds): " + str(time.time() - start_time))
+	print('Sims Done')
