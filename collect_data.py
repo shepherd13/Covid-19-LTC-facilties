@@ -167,6 +167,7 @@ class Collect_data:
 
 	def set_states(self, day, facility, indicies):
 		for person in indicies:
+			self.matric[facility].people[person].update_test_state(day)
 			current_disease_state = self.matric[facility].people[person].get_disease_state(day)
 			self.record_states(day, person, facility)
 			# set states for next day

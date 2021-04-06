@@ -1,6 +1,6 @@
 import numpy as np
 import random
-import sparse
+#import sparse
 from entities import Facility, Resident, Staff
 import copy
 

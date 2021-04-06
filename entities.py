@@ -22,7 +22,7 @@ class Person:
 	def __init__(self, parameters):
 		self.parameters = parameters
 		self.disease_state = [0] * int(self.parameters['Days'])
-		self.test_state = 0#[0] * int(self.parameters['Days'])
+		self.test_state = [0] * int(self.parameters['Days'])
 		self.last_tested = -parameters['Test Frequency']-1
 		self.days_infected = 0
 		self.incub_end = random.choice([5,6,7])
@@ -30,19 +30,26 @@ class Person:
 		self.transmission_start = self.incub_end - 2
 		self.transmission_end = 10
 
-	# def update_test_state(self, day, state):
-	# 	self.test_state[day] = state
+	def update_test_state(self, day):
+		if day < int(self.parameters['Days'])-1:
+			if self.test_state[day+1] == 0:
+				self.test_state[day+1] = self.test_state[day]
+
+	# def get_current_test_state(self, day):
+	# 	if day - self.last_tested <= self.parameters['Test Frequency']:
+	# 		return self.test_state[day]
+
 
 	def get_valid_test_state(self, day):
-		if self.test_state == 1:
+		if self.test_state[day] == 1:
 			if day - self.last_tested > self.parameters['Test Frequency']:
-				self.test_state = 0
-				return self.test_state
-		elif self.test_state == -1:
-			if day - self.last_tested > 14:
-				self.test_state = 0
-				return self.test_state
-		return self.test_state
+				self.test_state[day] = 0
+				return self.test_state[day]
+		elif self.test_state[day] == -1:
+			if day - self.last_tested[day] > 14:
+				self.test_state[day] = 0
+				return self.test_state[day]
+		return self.test_state[day]
 
 
 	# def get_disease_state(day):

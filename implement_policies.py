@@ -15,7 +15,7 @@ class Policies:
 				self.replace_dead_people(day, person, facility)
 				if day > self.parameters['Policy Start Testing']:
 					self.testing(day, person, facility)
-				if self.matric[facility].people[person].get_disease_state(day) in [2,3,4]: #.get_valid_test_state(day) == 1:
+				if self.matric[facility].people[person].test_state[day] == 1: #get_disease_state(day) in [2,3,4]:
 					facility_positive_cases += 1
 
 			# Permanent Staff members
@@ -24,7 +24,7 @@ class Policies:
 				#self.replace_infected_staff(day, person, facility)
 				if day > self.parameters['Policy Start Testing']:
 					self.testing(day, person, facility)
-				if self.matric[facility].people[person].get_disease_state(day) in [2,3,4]: #get_valid_test_state(day) == 1:
+				if self.matric[facility].people[person].test_state[day] == 1: #get_disease_state(day) in [2,3,4]:
 					facility_positive_cases += 1
 
 			# Temporary Staff members(visiting the facility that "day")
@@ -34,7 +34,7 @@ class Policies:
 					#self.replace_infected_staff(day, person, facility)
 					if day > self.parameters['Policy Start Testing']:
 						self.testing(day, person, facility)
-					if self.matric[facility].people[person].get_disease_state(day) in [2,3,4]: #get_valid_test_state(day) == 1:
+					if self.matric[facility].people[person].test_state[day] == 1: #get_disease_state(day) in [2,3,4]:
 						facility_positive_cases += 1
 
 			if facility_positive_cases/(self.matric[facility].n_residents+self.matric[facility].n_staff) > self.parameters['Quarantine Location Infecion Rate']:
@@ -54,17 +54,18 @@ class Policies:
 
 	def testing(self, day, person, facility):
 		if day - self.matric[facility].people[person].last_tested > self.parameters['Test Frequency']:
-			self.viral_testing(day, person, facility)
-			self.matric[facility].people[person].last_tested = day
+			if day + int(self.parameters['Test Result turnaround time']) < self.parameters['Days']:
+				self.viral_testing(day, person, facility)
+				self.matric[facility].people[person].last_tested = day
 
 	# To add turnaround time we will need to save test_states daywise in an array
 	def viral_testing(self, day, person, facility):
 		cur_state = self.matric[facility].people[person].get_disease_state(day)
 		if cur_state in [0,1]:
-			self.matric[facility].people[person].test_state = random.choices([-1, 1], [1.0 - self.parameters['False Positive Rate'], self.parameters['False Positive Rate']])[0]
+			self.matric[facility].people[person].test_state[day+int(self.parameters['Test Result turnaround time'])] = random.choices([-1, 1], [1.0 - self.parameters['False Positive Rate'], self.parameters['False Positive Rate']])[0]
 
 		elif cur_state in [2,3,4]:
-			self.matric[facility].people[person].test_state = random.choices([-1, 1], [self.parameters['False Negative Rate'], 1.0 - self.parameters['False Negative Rate']])[0]
+			self.matric[facility].people[person].test_state[day+int(self.parameters['Test Result turnaround time'])] = random.choices([-1, 1], [self.parameters['False Negative Rate'], 1.0 - self.parameters['False Negative Rate']])[0]
 
 
 
