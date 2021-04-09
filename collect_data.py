@@ -145,12 +145,9 @@ class Collect_data:
 				indicies = [i+self.matric[facility].n_residents+self.matric[facility].n_p_staff for i in indicies.nonzero()[0]]
 				self.set_states(day, facility, indicies)
 
-				# total_daily_infected = [0]*len(self.matric)
-				# for infection_model in daily_infected:
-				# 	for infected in infection_model:
-				# 		total_daily_infected = np.add(total_daily_infected, infected)
 
 				self.daily_infected[facility][day] = np.sum([di for model in daily_infected for di in model], 0)[facility]
+				print("daily infected 4:", self.daily_infected[facility][day])
 				self.daily_infected_residents[facility][day] = np.sum([di[0] for di in daily_infected], 0)[facility]
 				self.daily_infected_staff[facility][day] = np.sum([di[1] for di in daily_infected], 0)[facility]
 
@@ -164,6 +161,13 @@ class Collect_data:
 					self.recovered[facility][day] += self.recovered[facility][day-1]
 					self.residents_recovered[facility][day] += self.residents_recovered[facility][day-1]
 					self.staff_recovered[facility][day] += self.staff_recovered[facility][day-1]
+
+				indicies = []
+				for person in range(self.matric[facility].n_residents+self.matric[facility].n_p_staff, self.matric[facility].n_residents+self.matric[facility].n_staff):
+					if (self.matric[facility].people[person].quarantine_days > 0) and (self.matric[facility].people[person].infected_location == facility):
+						indicies.append(person)
+				self.set_states(day, facility, indicies)
+
 
 	def set_states(self, day, facility, indicies):
 		for person in indicies:

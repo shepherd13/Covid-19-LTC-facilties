@@ -195,6 +195,7 @@ class GenerateNetwork:
 	def update_contacts_when_person_die(self, facility, person_id):
 		if person_id < self.matric[facility].n_residents:
 			replacement_id = self.matric[facility].n_residents
+			print("Resident DIED")
 		else:
 			print("STAFF DIED")
 			replacement_id = self.matric[facility].n_residents + self.matric[facility].n_staff
@@ -209,6 +210,38 @@ class GenerateNetwork:
 		new_person = Resident(gender, self.parameters)
 		self.matric[facility].people = np.insert(self.matric[facility].people, self.matric[facility].n_residents, new_person)
 		self.matric[facility].n_residents += 1
+
+
+	def update_staff_when_person_quarantine(self, facility, person_id):
+		if person_id < self.matric[facility].n_residents + self.matric[facility].n_p_staff:
+			replacement_id = self.matric[facility].n_residents + self.matric[facility].n_p_staff
+		else:
+			replacement_id = self.matric[facility].n_residents + self.matric[facility].n_staff
+
+		for day in range(7):
+			temp_matrix = np.insert(self.matric[facility].daily_contacts[day], replacement_id, np.zeros(self.matric[facility].daily_contacts[day].shape[0]), 1)
+			temp_matrix = np.insert(temp_matrix, replacement_id, np.zeros(temp_matrix.shape[1]), 0)
+			temp_matrix[[person_id, replacement_id]] = temp_matrix[[replacement_id, person_id]]
+			temp_matrix[:,[person_id, replacement_id]] = temp_matrix[:,[replacement_id, person_id]]
+			self.matric[facility].daily_contacts[day] = temp_matrix
+		
+		if person_id < self.matric[facility].n_residents + self.matric[facility].n_p_staff:
+			employment_type = 2				#Permanent = 0, Temporary = 1
+			new_person = Staff(employment_type, self.parameters)
+			new_person.filler = 1
+			self.matric[facility].people = np.insert(self.matric[facility].people, self.matric[facility].n_residents+self.matric[facility].n_p_staff, new_person)
+			self.matric[facility].n_p_staff += 1
+			self.matric[facility].n_staff += 1
+			print("Permanent staff quarantined and filled")
+
+		else:
+			employment_type = 3				#Permanent = 0, Temporary = 1
+			new_person = Staff(employment_type, self.parameters)
+			new_person.filler = 1
+			self.matric[facility].people = np.insert(self.matric[facility].people, self.matric[facility].n_residents+self.matric[facility].n_staff, new_person)
+			self.matric[facility].n_t_staff += 1
+			self.matric[facility].n_staff += 1
+			print("Temporary staff quarantined and filled")
 
 
 	def isolate_facility(self, facility):

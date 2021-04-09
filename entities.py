@@ -13,6 +13,7 @@ class Facility:
 		self.zipcode = zipcode
 		self.affiliation = affiliation
 		self.facility_type = facility_type
+		self.quarantine_days = 0
 
 	def set_daily_contacts(self, day, contact_pattern):
 		self.daily_contacts[day] = contact_pattern
@@ -29,11 +30,20 @@ class Person:
 		self.infection_end = 7.8
 		self.transmission_start = self.incub_end - 2
 		self.transmission_end = 10
+		self.quarantine_days = 0
 
 	def update_test_state(self, day):
 		if day < int(self.parameters['Days'])-1:
+			if (self.test_state[day] == 1) and (day - self.last_tested > 14):
+				self.test_state[day+1] = 0
+			if (self.test_state[day] == -1) and (day - self.last_tested > self.parameters['Test Frequency']):
+				self.test_state[day+1] = 0
 			if self.test_state[day+1] == 0:
 				self.test_state[day+1] = self.test_state[day]
+
+	def update_quarantine_status(self):
+		if self.quarantine_days > 0:
+			self.quarantine_days += 1
 
 	# def get_current_test_state(self, day):
 	# 	if day - self.last_tested <= self.parameters['Test Frequency']:
@@ -81,6 +91,9 @@ class Resident(Person):
 class Staff(Person):
 	def __init__(self, emplyment_type, parameters):
 		self.emplyment_type = emplyment_type
+		self.filler = 0
 		super().__init__(parameters)
 
+	def update_infected_location(self, facility):
+		self.infected_location = facility
 
