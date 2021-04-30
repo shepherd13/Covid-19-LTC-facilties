@@ -1,12 +1,12 @@
-Output Directory: Outputs_temp_staff_10%
+Output Directory: fnr_20
 Collect_Data_Facilitywise: 1
-Runs: 10
+Runs: 100
 Days: 180
 Facilities: 2
 MALE_PERCENTAGE: 0.5
 TEMP_PERCENTAGE: 0.1
 CONTACTS_SS: 2
-CONTACTS_SR: 6
+CONTACTS_SR: 12
 CONTACTS_RS: 6
 CONTACTS_RR: 0
 Initial Infection Rate: 0.05
@@ -14,16 +14,16 @@ Probability of infection per infectious contact: 0.02
 Resident Asymptomatic Rate: 0.20
 Staff Asymptomatic Rate: 0.40
 Transmission rate type: static
-Outside Transmission Rate: 0.005
-Daily baseline mortality rate: 0.0
-Daily covid mortality rate: 0.0
+Outside Transmission Rate: 0.001
+Daily baseline mortality rate: 0.001
+Daily covid mortality rate: 0.02
 Policy Start Masking: 0
-Masking efficiency: 0.0
-Quarantine Location Infecion Rate: 0.2
+Masking efficiency: 0.38
+Quarantine Location Infecion Rate: 0.05
 Agent Quarantine Days: 14
 Policy Start Testing: -1
-Test Frequency: 1
-Test Result turnaround time: 0
-False Positive Rate: 0.00
-False Negative Rate: 0.00
-threshold: 30
+Test Frequency: 7
+Test Result turnaround time: 1
+False Positive Rate: 0
+False Negative Rate: 0.2
+threshold: 20

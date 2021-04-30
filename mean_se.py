@@ -7,7 +7,7 @@ import scipy
 from scipy import stats
 import matplotlib.pyplot as plt
 
-def updateCSV2(export, sus, inf, cumInf, cumInfRes, cumInfStaff, dailyInf, dailyInfRes, dailyInfStaff, inc, trans, sym, asym, rec, resrec, stafrec, dead):
+def updateCSV2(export, sus, inf, cumInf, cumInfRes, cumInfStaff, dailyInf, dailyInfRes, dailyInfStaff, inc, trans, sym, asym, rec, resrec, stafrec, dead, dailyTested, dailyTestedPos, dailyTestedNeg, cumTestedPos, quarantined):
     with open(export, 'w', newline='') as f:
         writer = csv.writer(f)
 
@@ -29,6 +29,11 @@ def updateCSV2(export, sus, inf, cumInf, cumInfRes, cumInfStaff, dailyInf, daily
         l.append('Residents Recovered')
         l.append('Staff Recovered')
         l.append('Dead')
+        l.append('Daily Tested')
+        l.append('Daily Tested Positive')
+        l.append('Daily Tested Negative')
+        l.append('Cumulative Tested Positive')
+        l.append('Quarantined')
         writer.writerow(l)
 
         for i in range(len(sus)):
@@ -50,6 +55,11 @@ def updateCSV2(export, sus, inf, cumInf, cumInfRes, cumInfStaff, dailyInf, daily
             l.append(resrec[i])
             l.append(stafrec[i])
             l.append(dead[i])
+            l.append(dailyTested[i])
+            l.append(dailyTestedPos[i])
+            l.append(dailyTestedNeg[i])
+            l.append(cumTestedPos[i])
+            l.append(quarantined[i])
             writer.writerow(l)
 
 def get_mean_se(parameters, output_dir):
@@ -81,6 +91,11 @@ def get_mean_se(parameters, output_dir):
     ResRecMat = []
     StafRecMat = []
     DeadMat = []
+    DailyTestedMat = []
+    DailyTestedPosMat = []
+    DailyTestedNegMat = []
+    CumTestedPosMat = []
+    QuarantinedMat = []
 
     # Remove this part
     a = 0
@@ -107,6 +122,11 @@ def get_mean_se(parameters, output_dir):
         ResRecMat.append(elem['Residents Recovered'].tolist())
         StafRecMat.append(elem['Staff Recovered'].tolist())
         DeadMat.append(elem['Dead'].tolist())
+        DailyTestedMat.append(elem['Daily Tested'].tolist())
+        DailyTestedPosMat.append(elem['Daily Tested Positive'].tolist())
+        DailyTestedNegMat.append(elem['Daily Tested Negative'].tolist())
+        CumTestedPosMat.append(elem['Cumulative Tested Positive'].tolist())
+        QuarantinedMat.append(elem['Quarantined'].tolist())
 
     print("Probability of intfection jump:", a/parameters['Runs'])
 
@@ -126,6 +146,11 @@ def get_mean_se(parameters, output_dir):
     ResRecMat = np.column_stack(tuple(ResRecMat))
     StafRecMat = np.column_stack(tuple(StafRecMat))
     DeadMat = np.column_stack(tuple(DeadMat))
+    DailyTestedMat = np.column_stack(tuple(DailyTestedMat))
+    DailyTestedPosMat = np.column_stack(tuple(DailyTestedPosMat))
+    DailyTestedNegMat = np.column_stack(tuple(DailyTestedNegMat))
+    CumTestedPosMat = np.column_stack(tuple(CumTestedPosMat))
+    QuarantinedMat = np.column_stack(tuple(QuarantinedMat))
     
 
     SusMat = SusMat.transpose()
@@ -144,6 +169,11 @@ def get_mean_se(parameters, output_dir):
     ResRecMat = ResRecMat.transpose()
     StafRecMat = StafRecMat.transpose()
     DeadMat = DeadMat.transpose()
+    DailyTestedMat = DailyTestedMat.transpose()
+    DailyTestedPosMat = DailyTestedPosMat.transpose()
+    DailyTestedNegMat = DailyTestedNegMat.transpose()
+    CumTestedPosMat = CumTestedPosMat.transpose()
+    QuarantinedMat = QuarantinedMat.transpose()
     
 
     # get standard error
@@ -163,6 +193,11 @@ def get_mean_se(parameters, output_dir):
     semResRec = scipy.stats.sem(ResRecMat)
     semStafRec = scipy.stats.sem(StafRecMat)
     semDead = scipy.stats.sem(DeadMat)
+    semDailyTested = scipy.stats.sem(DailyTestedMat)
+    semDailyTestedPos = scipy.stats.sem(DailyTestedPosMat)
+    semDailyTestedNeg = scipy.stats.sem(DailyTestedNegMat)
+    semCumTestedPos = scipy.stats.sem(CumTestedPosMat)
+    semQuarantined = scipy.stats.sem(QuarantinedMat)
 
 
     # get mean
@@ -182,10 +217,23 @@ def get_mean_se(parameters, output_dir):
     meanResRec = ResRecMat.mean(0)
     meanStafRec = StafRecMat.mean(0)
     meanDead = DeadMat.mean(0)
+    meanDailyTested = DailyTestedMat.mean(0)
+    meanDailyTestedPos = DailyTestedPosMat.mean(0)
+    meanDailyTestedNeg = DailyTestedNegMat.mean(0)
+    meanCumTestedPos = CumTestedPosMat.mean(0)
+    meanQuarantined = QuarantinedMat.mean(0)
 
 
-    updateCSV2(directory + 'mean.csv', meanSus, meanInf, meanCumInf, meanCumInfRes, meanCumInfStaff, meanDailyInf, meanDailyInfRes, meanDailyInfStaff, meannum_incub, meanTransMat, meanSymMat, meanAsymMat, meanRec, meanResRec, meanStafRec, meanDead)
-    updateCSV2(directory + 'se.csv', semSus, semInf, semCumInf, semCumInfRes, semCumInfStaff, semDailyInf, semDailyInfRes, semDailyInfStaff, semnum_incub, semTransMat, semSymMat, semAsymMat, semRec, semResRec, semStafRec, semDead)
+    updateCSV2(directory + 'mean.csv', meanSus, meanInf, meanCumInf, meanCumInfRes, meanCumInfStaff,
+                                    meanDailyInf, meanDailyInfRes, meanDailyInfStaff, meannum_incub, 
+                                    meanTransMat, meanSymMat, meanAsymMat, meanRec, meanResRec, 
+                                    meanStafRec, meanDead, meanDailyTested, meanDailyTestedPos, 
+                                    meanDailyTestedNeg, meanCumTestedPos, meanQuarantined)
+    updateCSV2(directory + 'se.csv', semSus, semInf, semCumInf, semCumInfRes, semCumInfStaff,
+                                    semDailyInf, semDailyInfRes, semDailyInfStaff, semnum_incub, 
+                                    semTransMat, semSymMat, semAsymMat, semRec, semResRec, semStafRec,
+                                    semDead, semDailyTested, semDailyTestedPos, semDailyTestedNeg,
+                                    semCumTestedPos, semQuarantined)
     #updateCSV2(directory + title + '_se.csv', semSus, semInf, semCumInf, semDailyInf, semnum_incub, semAsymMat, semSymMat,
     #    semRec, semDead, semDailyDead, semHosp, sembreathMat, semrespMat, semicuMat, semDailyTestedMat, semSpreaderMat, semQuarantinedMat,
     #    semSymptomaticTestsMat, semContactTraceTestsMat, semExtraTestsMat, semPositive_SymptomaticTestsMat, semPositive_ContactTraceTestsMat, semPositive_ExtraTestsMat)

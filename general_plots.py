@@ -3986,11 +3986,11 @@ import os
 # #										LTC Plots 2 single
 # ##############################################################################################
 # import numpy as np
-# df0_mean_0 = pd.read_csv("Outputs_temp_staff_2%/facility_0/mean.csv")
-# df1_mean_0 = pd.read_csv("Outputs_temp_staff_2%/facility_1/mean.csv")
+# df0_mean_0 = pd.read_csv("Outputs_temp_staff_10%/facility_0/mean.csv")
+# df1_mean_0 = pd.read_csv("Outputs_temp_staff_10%/facility_1/mean.csv")
 
-# df0_se_0 = pd.read_csv("Outputs_temp_staff_2%/facility_0/se.csv")
-# df1_se_0 = pd.read_csv("Outputs_temp_staff_2%/facility_0/se.csv")
+# df0_se_0 = pd.read_csv("Outputs_temp_staff_10%/facility_0/se.csv")
+# df1_se_0 = pd.read_csv("Outputs_temp_staff_10%/facility_1/se.csv")
 
 # CI0 = df0_mean_0['Cumulative Infected']
 # CI1 = df0_mean_0['Cumulative Infected Residents']
@@ -4020,7 +4020,7 @@ import os
 
 # plt.xlabel('Num Days', figure=fig1)
 # plt.ylabel('Num People', figure=fig1)
-# title = "Cumulative infected when shared temp staff=2%"
+# title = "Cumulative infected when shared temp staff=10%"
 # plt.title(title)
 # plt.grid(True)
 # plt.xticks(np.arange(0, 181, 30))
@@ -4028,8 +4028,8 @@ import os
 
 # plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
 
-# textstr = '\n'.join(['Shared temp staff=2%',
-# 					'Threshold Infection\nrate to quarantine\na facility=2%',
+# textstr = '\n'.join(['Shared temp staff=10%',
+# 					'Threshold Infection\nrate to quarantine\na facility=10%',
 # 					'Facility infected=Facility 1',
 # 					'Initial Infection=0.02% population'])
 # props = dict(boxstyle='round', facecolor='white', alpha=0.15)
@@ -4048,26 +4048,26 @@ import os
 
 # df_mean_0 = pd.read_csv("Outputs_temp_staff_10%/facility_0/mean.csv")
 # df_mean_1 = pd.read_csv("Outputs_temp_staff_10%/facility_1/mean.csv")
-# df_mean_2 = pd.read_csv("Outputs_temp_staff_10%/facility_2/mean.csv")
+# #df_mean_2 = pd.read_csv("Outputs_temp_staff_10%/facility_2/mean.csv")
 
 # df_se_0 = pd.read_csv("Outputs_temp_staff_10%/facility_0/se.csv")
 # df_se_1 = pd.read_csv("Outputs_temp_staff_10%/facility_1/se.csv")
-# df_se_2 = pd.read_csv("Outputs_temp_staff_10%/facility_2/se.csv")
+# #df_se_2 = pd.read_csv("Outputs_temp_staff_10%/facility_2/se.csv")
 
 # CI0 = df_mean_0['Cumulative Infected']
 # CI1 = df_mean_1['Cumulative Infected']
-# CI2 = df_mean_2['Cumulative Infected']
+# #CI2 = df_mean_2['Cumulative Infected']
 
 # CI0_se = df_se_0['Cumulative Infected']
 # CI1_se = df_se_1['Cumulative Infected']
-# CI2_se = df_se_2['Cumulative Infected']
+# #CI2_se = df_se_2['Cumulative Infected']
 
 # length = 180
 # fig1 = plt.figure()
 
 # plt.errorbar(range(0,length), CI0, 1.96*CI0_se, label='Facility 1')
 # plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='Facility 2')
-# plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Facility 3')
+# #plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Facility 3')
 # # plt.errorbar(range(0,length), CI4, label='Temp Staff 810%')
 
 # plt.xlabel('Num Days', figure=fig1)
@@ -4212,55 +4212,106 @@ import os
 
 
 
-##############################################################################################
-#										LTC Plots 2 Testing
-##############################################################################################
-import numpy as np
-df_mean_0 = pd.read_csv("Outputs_testing/testing frequency=1/Outputs_temp_staff_2%/facility_1/mean.csv")
-df_mean_1 = pd.read_csv("Outputs_testing/testing frequency=3/Outputs_temp_staff_2%/facility_1/mean.csv")
-df_mean_2 = pd.read_csv("Outputs_testing/testing frequency=7/Outputs_temp_staff_2%/facility_1/mean.csv")
+# ##############################################################################################
+# #										LTC Plots 2 Testing
+# ##############################################################################################
+# import numpy as np
+# df_mean_0 = pd.read_csv("Outputs_testing/testing frequency=1/Outputs_temp_staff_2%/facility_1/mean.csv")
+# df_mean_1 = pd.read_csv("Outputs_testing/testing frequency=3/Outputs_temp_staff_2%/facility_1/mean.csv")
+# df_mean_2 = pd.read_csv("Outputs_testing/testing frequency=7/Outputs_temp_staff_2%/facility_1/mean.csv")
 
-df_se_0 = pd.read_csv("Outputs_testing/testing frequency=1/Outputs_temp_staff_2%/facility_1/se.csv")
-df_se_1 = pd.read_csv("Outputs_testing/testing frequency=3/Outputs_temp_staff_2%/facility_1/se.csv")
-df_se_2 = pd.read_csv("Outputs_testing/testing frequency=7/Outputs_temp_staff_2%/facility_1/se.csv")
-# df_mean_4 = pd.read_csv("Outputs_temp_staff_80%/mean.csv")
-CI0 = df_mean_0['Cumulative Infected']
-CI1 = df_mean_1['Cumulative Infected']
-CI2 = df_mean_2['Cumulative Infected']
+# df_se_0 = pd.read_csv("Outputs_testing/testing frequency=1/Outputs_temp_staff_2%/facility_1/se.csv")
+# df_se_1 = pd.read_csv("Outputs_testing/testing frequency=3/Outputs_temp_staff_2%/facility_1/se.csv")
+# df_se_2 = pd.read_csv("Outputs_testing/testing frequency=7/Outputs_temp_staff_2%/facility_1/se.csv")
+# # df_mean_4 = pd.read_csv("Outputs_temp_staff_80%/mean.csv")
+# CI0 = df_mean_0['Cumulative Infected']
+# CI1 = df_mean_1['Cumulative Infected']
+# CI2 = df_mean_2['Cumulative Infected']
 
-CI0_se = df_se_0['Cumulative Infected']
-CI1_se = df_se_1['Cumulative Infected']
-CI2_se = df_se_2['Cumulative Infected']
-# CI4 = df_mean_4['Cumulative Infected']
+# CI0_se = df_se_0['Cumulative Infected']
+# CI1_se = df_se_1['Cumulative Infected']
+# CI2_se = df_se_2['Cumulative Infected']
+# # CI4 = df_mean_4['Cumulative Infected']
 
 
-# CI0_se = df0_se_0['Cumulative Infected Residents']
-# CI1_se = df1_se_0['Cumulative Infected Staff']
+# # CI0_se = df0_se_0['Cumulative Infected Residents']
+# # CI1_se = df1_se_0['Cumulative Infected Staff']
 
-length = 180
+# length = 180
+# fig1 = plt.figure()
+
+# plt.errorbar(range(0,length), CI0, 1.96*CI0_se, label='testing frequency=1')
+# plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='testing frequency=3')
+# plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='testing frequency=7')
+
+# plt.xlabel('Num Days', figure=fig1)
+# plt.ylabel('Num People', figure=fig1)
+# title = "Cumulative infected when shared temp staff=2%"
+# plt.title(title)
+# plt.grid(True)
+# plt.xticks(np.arange(0, 181, 30))
+# #plt.yticks(np.arange(0, 101, 25))
+
+# plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
+
+# textstr = '\n'.join(['Shared temp staff=2%',
+# 					'Threshold Infection\nrate to quarantine\na facility=5%',
+# 					'Facility infected=Facility 1',
+# 					'Initial Infection=0.02% population'])
+# props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+# plt.text(1.06, 0.05, textstr, transform=plt.gca().transAxes, bbox=props)
+# # fig1.set_figheight(8)
+# # fig1.set_figwidth(8)
+# #plt.show()
+# fig1.savefig(title + '.png', bbox_inches='tight')
+
+
+
+
+
+
+# ##############################################################################################
+# #										Grid search plot
+# ##############################################################################################
+
+import numpy as np; np.random.seed(0)
+import seaborn as sns; sns.set_theme()
+
+# temp_staff = [2,4,10,20]
+# test_frequency = [1,3,7,14,30]
+# turnaround_time = [0,1,2,3]
+# fpr = [0,1,2,5,10,20]
+# fnr = [0,2,5,10,20]
+# quarantine_location = [2,5,10]
+
+temp_staff = [10]
+test_frequency = [3]
+turnaround_time = [0,1,2,3]
+fnr = [0,2,5,10]
+quarantine_location = [5]
+
+cum_inf = np.zeros([4,4])
+
+for i in range(len(fnr)):
+	for j in range(len(turnaround_time)):
+		for k in range(len(test_frequency)):
+			for l in range(len(quarantine_location)):
+				for m in range(len(temp_staff)):
+					line1 = "Outputs/"+"fnr_"+str(fnr[i])+"/"+"tt_"+str(turnaround_time[j])+"/"+"tf_"+str(test_frequency[k])+"/"+"ql_"+str(quarantine_location[l])+"/"+"ts_"+str(temp_staff[m])
+					a = pd.read_csv(line1+"/facility_0/mean.csv")['Cumulative Infected'][179]
+					b = pd.read_csv(line1+"/facility_1/mean.csv")['Cumulative Infected'][179]
+					cum_inf[i,j] = a+b
+
+
 fig1 = plt.figure()
-
-plt.errorbar(range(0,length), CI0, 1.96*CI0_se, label='testing frequency=1')
-plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='testing frequency=3')
-plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='testing frequency=7')
-
-plt.xlabel('Num Days', figure=fig1)
-plt.ylabel('Num People', figure=fig1)
-title = "Cumulative infected when shared temp staff=2%"
-plt.title(title)
-plt.grid(True)
-plt.xticks(np.arange(0, 181, 30))
-#plt.yticks(np.arange(0, 101, 25))
-
-plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
-
-textstr = '\n'.join(['Shared temp staff=2%',
-					'Threshold Infection\nrate to quarantine\na facility=5%',
-					'Facility infected=Facility 1',
-					'Initial Infection=0.02% population'])
-props = dict(boxstyle='round', facecolor='white', alpha=0.15)
-plt.text(1.06, 0.05, textstr, transform=plt.gca().transAxes, bbox=props)
-# fig1.set_figheight(8)
-# fig1.set_figwidth(8)
-#plt.show()
+ax = sns.heatmap(cum_inf, xticklabels=turnaround_time, yticklabels=fnr, annot=True)
+plt.xlabel("Turnaround Time") 
+plt.ylabel("False Negative Rate")
+plt.title("Cumulative Infected")
+textstr = '\n'.join(['Temp Staff=10%',
+					'Test Frequency=3 days',
+					'Quarantine Location=5%'])
+props = dict(boxstyle='round', facecolor='grey', alpha=0.15)
+plt.text(1.25, 0.05, textstr, transform=plt.gca().transAxes, bbox=props)
+title = 'heatmap'
 fig1.savefig(title + '.png', bbox_inches='tight')
