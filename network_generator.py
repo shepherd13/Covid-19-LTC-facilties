@@ -204,23 +204,23 @@ class GenerateNetwork:
                             staff_available.remove(sc)
 
                 # cohort Staff - staff interactions
-
-                staff_available = copy.deepcopy(cohort_staff)
-                # for s in range(f.n_residents, f.n_residents+p_staff):
-                for s in todays_staff:
-                    staff_contacts = np.sum(daily_contacts[s][f.n_residents:f.n_residents + f.n_c_staff])
-                    while (staff_contacts != self.parameters['CONTACTS_SS']):
-                        if len(staff_available) == 1 and staff_available[0] == s:
-                            break
-                        sc = random.choice(staff_available)
-                        if sum(daily_contacts[sc][f.n_residents:f.n_residents + f.n_c_staff]) == \
-                                self.parameters['CONTACTS_SS']:
-                            staff_available.remove(sc)
-                            continue
-                        if sc != s:
-                            daily_contacts[s, sc] += 1
-                            daily_contacts[sc, s] += 1
-                            staff_contacts += 1
+                if cohort_staff:
+                    staff_available = copy.deepcopy(cohort_staff)
+                    # for s in range(f.n_residents, f.n_residents+p_staff):
+                    for s in todays_staff:
+                        staff_contacts = np.sum(daily_contacts[s][f.n_residents:f.n_residents + f.n_c_staff])
+                        while (staff_contacts != self.parameters['CONTACTS_SS']):
+                            if len(staff_available) == 1 and staff_available[0] == s:
+                                break
+                            sc = random.choice(staff_available)
+                            if sum(daily_contacts[sc][f.n_residents:f.n_residents + f.n_c_staff]) == \
+                                    self.parameters['CONTACTS_SS']:
+                                staff_available.remove(sc)
+                                continue
+                            if sc != s:
+                                daily_contacts[s, sc] += 1
+                                daily_contacts[sc, s] += 1
+                                staff_contacts += 1
 
                 f.set_daily_contacts(day, daily_contacts)
 
@@ -263,6 +263,7 @@ class GenerateNetwork:
             print("MAJOR ERROR::::::::::::::::::::::STAFF DIED")
         # replacement_id = self.matric[facility].n_residents + self.matric[facility].n_staff
     def update_interaction_when_resident_sent_to_cohort(self, facility,person_id):
+        print("Resident sent to cohort ---- person id = "+str(person_id))
         if person_id<self.matric[facility].n_residents - self.matric[facility].n_c_residents:
             replacement_id = self.matric[facility].n_residents - self.matric[facility].n_c_residents
             for day in range(7):
@@ -298,11 +299,13 @@ class GenerateNetwork:
             self.matric[facility].n_c_staff -= 1
 
     def update_interaction_when_resident_removed_from_cohort(self,facility,person_id):
+        print("Resident sent to cohort ---- person id = " + str(person_id))
         #run before decrementing n_c_resident
         if person_id > self.matric[facility].n_residents - self.matric[facility].n_c_residents:
             replacement_id = self.matric[facility].n_residents - self.matric[facility].n_c_residents
         for day in range(7):
             self.swap_interactions(day, facility, replacement_id, person_id)
+        self.matric[facility].n_c_residents-=1
         self.remove_cohort_staff(facility)
         if person_id>self.matric[facility].n_residents:
             print("MAJOR ERROR:: Trying to remove staff from resident cohort")

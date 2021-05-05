@@ -30,7 +30,11 @@ class Policies:
 						if self.matric[facility].people[person].class_name() == 'Staff':
 							if self.matric[facility].people[person].quarantine_days == 0:		# First day of qurantine
 								self.replace_infected_staff(day, person, facility)
+						if self.matric[facility].people[person].class_name() == 'Resident':
+							if self.matric[facility].people[person].quarantine_days == 0:
+								self.send_resident_to_cohort(day,person,facility)
 				person += 1
+
 
 			if facility_positive_cases/(self.matric[facility].n_residents+self.matric[facility].n_staff) > self.parameters['Quarantine Location Infecion Rate']:
 				if facility not in self.network.isolated_facilities:
