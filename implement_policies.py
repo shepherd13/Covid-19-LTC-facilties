@@ -17,7 +17,10 @@ class Policies:
 					self.matric[facility].people[person].update_quarantine_status()
 					if self.matric[facility].people[person].quarantine_status == -1:
 						self.replace_recovered_staff(day, person, facility)
-					
+				if self.matric[facility].people[person].class_name() == 'Resident':
+					self.matric[facility].people[person].update_quarantine_status()
+					if self.matric[facility].people[person].quarantine_status == -1:
+						self.remove_resident_from_cohort(day,person,facility)
 				if (self.matric[facility].is_working(day%7, person)):
 					self.replace_dead_people(day, person, facility)
 					if day > self.parameters['Policy Start Testing']:
@@ -43,7 +46,7 @@ class Policies:
 	##### Take care of infected fillers #######
 	###########################################
 	def replace_infected_staff(self, day, person, facility):
-		if self.matric[facility].people[person].employment_type in [2,3]:
+		if self.matric[facility].people[person].employment_type in [2,3,5]:
 			self.matric[facility].people[person].disease_state = [0] * int(self.parameters['Days'])
 			self.matric[facility].people[person].test_state = [0] * int(self.parameters['Days'])
 			self.matric[facility].people[person].last_tested = -self.parameters['Test Frequency']-1
@@ -71,3 +74,10 @@ class Policies:
 		elif cur_state in [2,3,4]:
 			self.matric[facility].people[person].test_state[day+int(self.parameters['Test Result turnaround time'])] = random.choices([-1, 1], [self.parameters['False Negative Rate'], 1.0 - self.parameters['False Negative Rate']])[0]
 
+	def send_resident_to_cohort(self,day,person,facility):
+		self.matric[facility].people[person].set_quarantine_status(1)
+		self.matric[facility].people[person].update_qurantine_location(facility)
+		self.network.update_interaction_when_resident_sent_to_cohort(facility, person)
+
+	def remove_resident_from_cohort(self,day,person,facility):
+		self.network.update_interaction_when_resident_removed_from_cohort(facility,person)

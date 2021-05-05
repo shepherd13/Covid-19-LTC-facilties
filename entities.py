@@ -7,7 +7,9 @@ class Facility:
 		self.parameters = parameters
 		self.people = people
 		self.n_residents = n_residents
+		self.n_c_residents = 0
 		self.n_staff = len(people) - n_residents
+		self.n_c_staff = 0
 		self.n_p_staff = n_p_staff
 		self.n_t_staff = n_t_staff
 		self.zipcode = zipcode
@@ -35,6 +37,7 @@ class Person:
 		self.transmission_end = 10
 		self.quarantine_days = 0
 		self.quarantine_status = 0
+		self.recovered = False
 
 	# def update_test_state(self, day):
 	# 	if day < int(self.parameters['Days'])-1:
@@ -87,6 +90,7 @@ class Resident(Person):
 class Staff(Person):
 	def __init__(self, employment_type, parameters):
 		self.employment_type = employment_type
+
 		super().__init__(parameters)
 
 	def update_qurantine_location(self, facility):

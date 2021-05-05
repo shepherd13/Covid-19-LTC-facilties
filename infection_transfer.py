@@ -11,6 +11,7 @@ class InfectionTransfer:
 	def update_daily_infected(self, person_index, facility):
 		if(person_index < self.matric[facility].n_residents):
 			self.daily_residents_infected[facility] += 1
+			self.matric[facility].n_c_residents +=1
 		else:
 			self.daily_staff_infected[facility] += 1
 
@@ -27,7 +28,7 @@ class InitialInfection(InfectionTransfer):
 
 			infection_rate = self.parameters['Initial Infection Rate']
 			for facility in range(1):#range(len(self.matric)):
-				for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff):
+				for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff ):
 					if (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
 						self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
 						self.update_daily_infected(staff, facility)
