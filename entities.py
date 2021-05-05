@@ -84,13 +84,17 @@ class Resident(Person):
 		self.gender = gender
 		#self.ethnicity = ethnicity
 		#self.occupancy = occupancy
+		self.qurantine_location = None
 		super().__init__(parameters)
+
+	def update_qurantine_location(self, facility):
+		self.qurantine_location = facility
 
 
 class Staff(Person):
 	def __init__(self, employment_type, parameters):
 		self.employment_type = employment_type
-
+		self.qurantine_location = None
 		super().__init__(parameters)
 
 	def update_qurantine_location(self, facility):

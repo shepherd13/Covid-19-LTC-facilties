@@ -299,14 +299,16 @@ class GenerateNetwork:
             self.matric[facility].n_c_staff -= 1
 
     def update_interaction_when_resident_removed_from_cohort(self,facility,person_id):
-        print("Resident sent to cohort ---- person id = " + str(person_id))
+        print("Resident removed from cohort ---- person id = " + str(person_id))
         #run before decrementing n_c_resident
-        if person_id > self.matric[facility].n_residents - self.matric[facility].n_c_residents:
+        if person_id >= self.matric[facility].n_residents - self.matric[facility].n_c_residents:
             replacement_id = self.matric[facility].n_residents - self.matric[facility].n_c_residents
-        for day in range(7):
-            self.swap_interactions(day, facility, replacement_id, person_id)
-        self.matric[facility].n_c_residents-=1
-        self.remove_cohort_staff(facility)
+            for day in range(7):
+                self.swap_interactions(day, facility, replacement_id, person_id)
+            self.matric[facility].n_c_residents-=1
+            self.remove_cohort_staff(facility)
+        elif person_id<self.matric[facility].n_residents - self.matric[facility].n_c_residents:
+            print("MAJOR ERROR:: Trying to remove non cohort resident from cohort")
         if person_id>self.matric[facility].n_residents:
             print("MAJOR ERROR:: Trying to remove staff from resident cohort")
 
@@ -320,10 +322,10 @@ class GenerateNetwork:
             # print("Total People", self.matric[facility].n_residents, self.matric[facility].n_p_staff, self.matric[facility].n_t_staff)
 
             replacement_id = self.matric[facility].n_residents + self.matric[facility].n_p_staff
-            if person_id > self.matric[facility].n_residents + self.matric[facility].n_c_staff:
-                employment_type = 2  # Permanent_filler = 2, Temporary_filler = 3, Cohort_filler = 5
-            else:
-                employment_type= 5
+            # if person_id > self.matric[facility].n_residents + self.matric[facility].n_c_staff:
+            employment_type = 2  # Permanent_filler = 2, Temporary_filler = 3, Cohort_filler = 5
+            # else:
+            #     employment_type= 5
 
             new_person = Staff(employment_type, self.parameters)
             self.matric[facility].people = np.insert(self.matric[facility].people, replacement_id, new_person)
@@ -375,10 +377,10 @@ class GenerateNetwork:
 
         # non cohort staff qurantine ends
 
-        if self.matric[facility].n_residents + self.matric[facility].n_p_staff > person_id > self.matric[facility].n_residents + self.matric[facility].n_c_staff:
-            for staff in range(self.matric[facility].n_residents + self.matric[facility].n_c_staff,
+        if person_id < self.matric[facility].n_residents + self.matric[facility].n_p_staff:
+            for staff in range(self.matric[facility].n_residents,
                                self.matric[facility].n_residents + self.matric[facility].n_p_staff):
-                if self.matric[facility].people[staff].employment_type == 2: # Permanent_filler = 2, Temporary_filler = 3, Cohort_filler = 5
+                if self.matric[facility].people[staff].employment_type == 2:
                     replacement_id = staff
                     break
             # print("\n")
@@ -406,18 +408,21 @@ class GenerateNetwork:
 
         # print("AFTER Total People", self.matric[facility].n_residents, self.matric[facility].n_p_staff, self.matric[facility].n_t_staff)
         # print("AFTER Shape of facility:", self.matric[facility].daily_contacts[0].shape)
-        elif self.matric[facility].n_residents  < person_id < \
-                self.matric[facility].n_residents + self.matric[facility].n_c_staff:
-            for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_c_staff):
-                if self.matric[facility].people[staff].employment_type == 5: # Permanent_filler = 2, Temporary_filler = 3, Cohort_filler = 5
-                    replacement_id = staff
-                    break
-            for day in range(7):
-                self.remove_person(day, facility, replacement_id, person_id)
-            self.matric[facility].people = np.delete(self.matric[facility].people, replacement_id)
-            self.matric[facility].n_p_staff -= 1
-            self.matric[facility].n_staff -= 1
-            self.matric[facility].people[person_id].recovered = True
+        # elif self.matric[facility].n_residents  < person_id < \
+        #         self.matric[facility].n_residents + self.matric[facility].n_c_staff:
+        #     replacement_id = -1
+        #     for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_c_staff):
+        #         if self.matric[facility].people[staff].employment_type == 5: # Permanent_filler = 2, Temporary_filler = 3, Cohort_filler = 5
+        #             replacement_id = staff
+        #             break
+        #     if replacement_id==-1:
+        #         replacement_id=random.choice(list(range()))
+        #     for day in range(7):
+        #         self.remove_person(day, facility, replacement_id, person_id)
+        #     self.matric[facility].people = np.delete(self.matric[facility].people, replacement_id)
+        #     self.matric[facility].n_p_staff -= 1
+        #     self.matric[facility].n_staff -= 1
+        #     self.matric[facility].people[person_id].recovered = True
 
 
 

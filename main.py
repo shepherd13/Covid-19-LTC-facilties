@@ -48,7 +48,7 @@ def get_output_directory(parameters):
 
 
 def run_sim(run, parameters, network):
-	# print('############################################################# RUN:', run)
+	print('############################################################# RUN:', run)
 	days = int(parameters['Days'])
 	interactions = network.matric
 	# Infection Transfer Models
@@ -97,12 +97,12 @@ def main(param_file):
 		network = copy.deepcopy(gn)
 		# print("############################################################## Run:", run)
 		# print("Before:",network.matric[0].n_residents, network.matric[0].n_staff,"::",network.matric[1].n_residents, network.matric[1].n_staff)#,network.matric[2].n_residents)
-		# run_sim(run, parameters, network)
-		# print("After:",network.matric[0].n_residents, network.matric[0].n_staff,"::",network.matric[1].n_residents, network.matric[1].n_staff)#,network.matric[2].n_residents)
-		p.apply_async(run_sim, args=(run, parameters, network, ))
-		#del network
-	p.close()
-	p.join()
+		run_sim(run, parameters, network)
+	# 	# print("After:",network.matric[0].n_residents, network.matric[0].n_staff,"::",network.matric[1].n_residents, network.matric[1].n_staff)#,network.matric[2].n_residents)
+	# 	p.apply_async(run_sim, args=(run, parameters, network, ))
+	# 	#del network
+	# p.close()
+	# p.join()
 
 	if parameters['Collect_Data_Facilitywise'] == 0:
 		get_mean_se(parameters, parameters['Output Directory'])

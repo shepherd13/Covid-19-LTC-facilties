@@ -4283,35 +4283,51 @@ import seaborn as sns; sns.set_theme()
 # fpr = [0,1,2,5,10,20]
 # fnr = [0,2,5,10,20]
 # quarantine_location = [2,5,10]
+#
+# temp_staff = [10]
+# test_frequency = [3]
+# turnaround_time = [0,1,2,3]
+# # fnr = [0,2,5,10]
+# fnr = [20]
+# quarantine_location = [5]
+#
+# cum_inf = np.zeros([4,4])
+#
+# for i in range(len(fnr)):
+# 	for j in range(len(turnaround_time)):
+# 		for k in range(len(test_frequency)):
+# 			for l in range(len(quarantine_location)):
+# 				for m in range(len(temp_staff)):
+# 					line1 = "Outputs/"+"fnr_"+str(fnr[i])+"/"+"tt_"+str(turnaround_time[j])+"/"+"tf_"+str(test_frequency[k])+"/"+"ql_"+str(quarantine_location[l])+"/"+"ts_"+str(temp_staff[m])
+# 					a = pd.read_csv(line1+"/facility_0/mean.csv")['Cumulative Infected'][179]
+# 					b = pd.read_csv(line1+"/facility_1/mean.csv")['Cumulative Infected'][179]
+# 					cum_inf[i,j] = a+b
+#
+#
+# fig1 = plt.figure()
+# ax = sns.heatmap(cum_inf, xticklabels=turnaround_time, yticklabels=fnr, annot=True)
+# plt.xlabel("Turnaround Time")
+# plt.ylabel("False Negative Rate")
+# plt.title("Cumulative Infected")
+# textstr = '\n'.join(['Temp Staff=10%',
+# 					'Test Frequency=3 days',
+# 					'Quarantine Location=5%'])
+# props = dict(boxstyle='round', facecolor='grey', alpha=0.15)
+# plt.text(1.25, 0.05, textstr, transform=plt.gca().transAxes, bbox=props)
+# title = 'heatmap'
+# fig1.savefig(title + '.png', bbox_inches='tight')
 
-temp_staff = [10]
-test_frequency = [3]
-turnaround_time = [0,1,2,3]
-fnr = [0,2,5,10]
-quarantine_location = [5]
-
-cum_inf = np.zeros([4,4])
-
-for i in range(len(fnr)):
-	for j in range(len(turnaround_time)):
-		for k in range(len(test_frequency)):
-			for l in range(len(quarantine_location)):
-				for m in range(len(temp_staff)):
-					line1 = "Outputs/"+"fnr_"+str(fnr[i])+"/"+"tt_"+str(turnaround_time[j])+"/"+"tf_"+str(test_frequency[k])+"/"+"ql_"+str(quarantine_location[l])+"/"+"ts_"+str(temp_staff[m])
-					a = pd.read_csv(line1+"/facility_0/mean.csv")['Cumulative Infected'][179]
-					b = pd.read_csv(line1+"/facility_1/mean.csv")['Cumulative Infected'][179]
-					cum_inf[i,j] = a+b
-
-
-fig1 = plt.figure()
-ax = sns.heatmap(cum_inf, xticklabels=turnaround_time, yticklabels=fnr, annot=True)
-plt.xlabel("Turnaround Time") 
-plt.ylabel("False Negative Rate")
-plt.title("Cumulative Infected")
-textstr = '\n'.join(['Temp Staff=10%',
-					'Test Frequency=3 days',
-					'Quarantine Location=5%'])
-props = dict(boxstyle='round', facecolor='grey', alpha=0.15)
-plt.text(1.25, 0.05, textstr, transform=plt.gca().transAxes, bbox=props)
-title = 'heatmap'
-fig1.savefig(title + '.png', bbox_inches='tight')
+mean_fac_0_df = pd.read_csv("fnr_20/facility_0/mean.csv")
+mean_fac_1_df = pd.read_csv("fnr_20/facility_1/mean.csv")
+fig0 = plt.figure()
+ax = sns.lineplot("Day","Recovered", data=mean_fac_0_df)
+ax1 = sns.lineplot("Day","Recovered", data=mean_fac_1_df)
+plt.xlabel("Num Days")
+plt.ylabel("Num People")
+plt.title("Cumulative Residents and Staff Recovered")
+fig0.savefig("Recovered.png")
+# fig1 = plt.figure()
+#
+#
+#
+# fig1.savefig("Facility_1.png")
