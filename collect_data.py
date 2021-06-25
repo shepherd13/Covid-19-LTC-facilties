@@ -29,6 +29,8 @@ class Collect_data:
 			self.daily_tested_negative = [0] * self.days
 			self.cumulative_tested_positive = [0] * self.days
 			self.quarantined = [0] * self.days
+			self.infected_facilities = [0] * self.days
+			self.quarantined_facilities = [0] * self.days
 		else:
 			self.susceptible = [([0] * self.days) for i in range(len(self.matric))]
 			self.infected = [([0] * self.days) for i in range(len(self.matric))]
@@ -51,6 +53,8 @@ class Collect_data:
 			self.daily_tested_negative = [([0] * self.days) for i in range(len(self.matric))]
 			self.cumulative_tested_positive = [([0] * self.days) for i in range(len(self.matric))]
 			self.quarantined = [([0] * self.days) for i in range(len(self.matric))]
+			self.infected_facilities = [([0] * self.days) for i in range(len(self.matric))]
+			self.quarantined_facilities = [([0] * self.days) for i in range(len(self.matric))]
 
 	def record_states(self, day, person, facility):
 		current_disease_state = self.matric[facility].people[person].get_disease_state(day)
@@ -155,8 +159,14 @@ class Collect_data:
 				indicies = list(range(self.matric[facility].n_residents + self.matric[facility].n_p_staff))
 				self.set_states(day, facility, indicies)
 
-			indicies = list(range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff))
-			self.set_states(day, facility, indicies)
+				indicies = list(range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff))
+				self.set_states(day, facility, indicies)
+
+				if self.matric[facility].infected:
+					self.infected_facilities[day] += 1
+
+				if self.matric[facility].quarantined:
+					self.quarantined_facilities[day] += 1
 
 			# Disease States
 			self.daily_infected[day] = np.sum(daily_infected)
@@ -188,6 +198,12 @@ class Collect_data:
 				indicies = self.matric[facility].daily_contacts[day%7].sum(0)[self.matric[facility].n_residents+self.matric[facility].n_p_staff : self.matric[facility].n_residents+self.matric[facility].n_staff]
 				indicies = [i+self.matric[facility].n_residents+self.matric[facility].n_p_staff for i in indicies.nonzero()[0]]
 				self.set_states(day, facility, indicies)
+
+				if self.matric[facility].infected:
+					self.infected_facilities[facility][day] += 1
+
+				if self.matric[facility].quarantined:
+					self.quarantined_facilities[facility][day] += 1
 
 				## Specifically set states of Quarantined temporary staff
 				indicies = []
@@ -222,11 +238,13 @@ class Collect_data:
 	def set_states(self, day, facility, indicies):
 		for person in indicies:
 			# self.matric[facility].people[person].update_test_state(day)
-			current_disease_state = self.matric[facility].people[person].get_disease_state(day)
-			self.record_states(day, person, facility)
-			# set states for next day
-			if (day + 1) != self.days:
-				self.matric[facility].people[person].update_disease_state(day + 1, current_disease_state)
+			if self.matric[facility].people[person].last_recorded != day:
+				current_disease_state = self.matric[facility].people[person].get_disease_state(day)
+				self.record_states(day, person, facility)
+				# set states for next day
+				if (day + 1) != self.days:
+					self.matric[facility].people[person].update_disease_state(day + 1, current_disease_state)
+				self.matric[facility].people[person].last_recorded = day
 
 
 	def update_csv(self, export_file):
@@ -259,6 +277,8 @@ class Collect_data:
 				l.append('Daily Tested Negative')
 				l.append('Cumulative Tested Positive')
 				l.append('Quarantined')
+				l.append('Infected Facilities')
+				l.append('Quarantined Facilities')
 				writer.writerow(l)
 
 				# len used to iterate through every day
@@ -286,6 +306,8 @@ class Collect_data:
 					l.append(self.daily_tested_negative[i])
 					l.append(self.cumulative_tested_positive[i])
 					l.append(self.quarantined[i])
+					l.append(self.infected_facilities[i])
+					l.append(self.quarantined_facilities[i])
 					writer.writerow(l)
 			g.close()
 		else:
@@ -318,6 +340,8 @@ class Collect_data:
 					l.append('Daily Tested Negative')
 					l.append('Cumulative Tested Positive')
 					l.append('Quarantined')
+					l.append('Infected Facilities')
+					l.append('Quarantined Facilities')
 					writer.writerow(l)
 
 					# len used to iterate through every day
@@ -345,5 +369,7 @@ class Collect_data:
 						l.append(self.daily_tested_negative[f][i])
 						l.append(self.cumulative_tested_positive[f][i])
 						l.append(self.quarantined[f][i])
+						l.append(self.infected_facilities[f][i])
+						l.append(self.quarantined_facilities[f][i])
 						writer.writerow(l)
 				g.close()

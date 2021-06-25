@@ -2,18 +2,21 @@ import random
 import numpy as np
 
 class Facility:
-	def __init__(self, parameters, people, n_p_staff, n_t_staff, n_residents, n_staff, zipcode, affiliation, facility_type):
+	def __init__(self, parameters, people, n_p_staff, n_t_staff, facility_details):
 		self.daily_contacts = [0]*7
 		self.parameters = parameters
 		self.people = people
-		self.n_residents = n_residents
-		self.n_staff = len(people) - n_residents
+		self.n_residents = facility_details['residents']
+		self.n_staff = len(people) - facility_details['residents']
 		self.n_p_staff = n_p_staff
 		self.n_t_staff = n_t_staff
-		self.zipcode = zipcode
-		self.affiliation = affiliation
-		self.facility_type = facility_type
+		self.facility_code = facility_details['facility_code']
+		self.affiliation = facility_details['affiliation']
+		self.facility_type = facility_details['facility_type']
+		self.start_masking_policy = parameters['Policy Start Masking']
 		self.quarantine_days = 0
+		self.infected = False
+		self.quarantined = False
 
 	def set_daily_contacts(self, day, contact_pattern):
 		self.daily_contacts[day] = contact_pattern
@@ -26,6 +29,7 @@ class Person:
 	def __init__(self, parameters):
 		self.parameters = parameters
 		self.disease_state = [0] * int(self.parameters['Days'])
+		self.last_updated = -1
 		self.test_state = [0] * int(self.parameters['Days'])
 		self.last_tested = -self.parameters['Test Frequency']-1
 		self.days_infected = 0
@@ -35,6 +39,7 @@ class Person:
 		self.transmission_end = 10
 		self.quarantine_days = 0
 		self.quarantine_status = 0
+		self.last_recorded = -1
 
 	# def update_test_state(self, day):
 	# 	if day < int(self.parameters['Days'])-1:
@@ -85,9 +90,13 @@ class Resident(Person):
 
 
 class Staff(Person):
-	def __init__(self, employment_type, parameters):
+	def __init__(self, employment_type, parameters, shared_facilities):
 		self.employment_type = employment_type
+		self.shared_facilities = shared_facilities
 		super().__init__(parameters)
+
+	def update_shared_facilities(self, facility):
+		self.shared_facilities.append(facility)
 
 	def update_qurantine_location(self, facility):
 		self.qurantine_location = facility

@@ -63,12 +63,7 @@ class Covid19_DiseaseProgression(DiseaseProgression):
 
 	def disease_progression(self, day):
 		for facility in range(len(self.matric)):
-			for person in range(self.matric[facility].n_residents+self.matric[facility].n_p_staff):
-				self.update_states(day, person, facility)
-
-		for person in range(self.matric[facility].n_residents+self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
-			self.update_states(day, person, facility)
-
-
-
-
+			for person in range(self.matric[facility].n_residents+self.matric[facility].n_staff):
+				if self.matric[facility].people[person].last_updated != day:
+					self.update_states(day, person, facility)
+					self.matric[facility].people[person].last_updated = day

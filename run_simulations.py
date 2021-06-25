@@ -5,12 +5,17 @@ f = open("parameters.txt")
 a = f.read().split("\n")
 f.close()
 
-temp_staff = [4,10,20]
+# temp_staff = [4,10,20]
+# test_frequency = [1,3,7,14,30]
+# turnaround_time = [0,1,2,3]
+# fnr = [0,5,10,20]
+# quarantine_location = [2,5,10]
+
+temp_staff = [0,4,10,20]
 test_frequency = [1,3,7,14,30]
 turnaround_time = [0,1,2,3]
 fnr = [0,5,10,20]
 quarantine_location = [2,5,10]
-
 
 # line_1_part_2 = "tf_"
 # line_1_part_3 = "tt_"

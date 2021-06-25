@@ -1,7 +1,0 @@
-#!/bin/bash -l
-#PBS -l walltime=00:20:00,nodes=1:ppn=100,mem=50gb
-#PBS -m abe
-#PBS -M khark007@umn.edu
-cd ~/Downloads/Covid-19-LTC-facilties/
-module load intel
-python main.py > result

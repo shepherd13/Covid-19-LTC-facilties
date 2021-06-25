@@ -7,7 +7,7 @@ import scipy
 from scipy import stats
 import matplotlib.pyplot as plt
 
-def updateCSV2(export, sus, inf, cumInf, cumInfRes, cumInfStaff, dailyInf, dailyInfRes, dailyInfStaff, inc, trans, sym, asym, rec, resrec, stafrec, dead, dailyTested, dailyTestedPos, dailyTestedNeg, cumTestedPos, quarantined):
+def updateCSV2(export, sus, inf, cumInf, cumInfRes, cumInfStaff, dailyInf, dailyInfRes, dailyInfStaff, inc, trans, sym, asym, rec, resrec, stafrec, dead, dailyTested, dailyTestedPos, dailyTestedNeg, cumTestedPos, quarantined, infFac, quarantinedFac):
     with open(export, 'w', newline='') as f:
         writer = csv.writer(f)
 
@@ -34,6 +34,8 @@ def updateCSV2(export, sus, inf, cumInf, cumInfRes, cumInfStaff, dailyInf, daily
         l.append('Daily Tested Negative')
         l.append('Cumulative Tested Positive')
         l.append('Quarantined')
+        l.append('Infected Facilities')
+        l.append('Quarantined Facilities')
         writer.writerow(l)
 
         for i in range(len(sus)):
@@ -60,6 +62,8 @@ def updateCSV2(export, sus, inf, cumInf, cumInfRes, cumInfStaff, dailyInf, daily
             l.append(dailyTestedNeg[i])
             l.append(cumTestedPos[i])
             l.append(quarantined[i])
+            l.append(infFac[i])
+            l.append(quarantinedFac[i])
             writer.writerow(l)
 
 def get_mean_se(parameters, output_dir):
@@ -96,15 +100,17 @@ def get_mean_se(parameters, output_dir):
     DailyTestedNegMat = []
     CumTestedPosMat = []
     QuarantinedMat = []
+    InfectedFacMat = []
+    QuarantinedFacMat = []
 
     # Remove this part
-    a = 0
+    # a = 0
     #################
 
 
     for elem in List:
-        if elem['Cumulative Infected'].tolist()[-1] >= parameters['threshold']:
-            a += 1
+        # if elem['Cumulative Infected'].tolist()[-1] >= parameters['threshold']:
+        #     a += 1
 
         SusMat.append(elem['Susceptible'].tolist())
         InfMat.append(elem['Infected'].tolist())
@@ -127,8 +133,10 @@ def get_mean_se(parameters, output_dir):
         DailyTestedNegMat.append(elem['Daily Tested Negative'].tolist())
         CumTestedPosMat.append(elem['Cumulative Tested Positive'].tolist())
         QuarantinedMat.append(elem['Quarantined'].tolist())
+        InfectedFacMat.append(elem['Infected Facilities'].tolist())
+        QuarantinedFacMat.append(elem['Quarantined Facilities'].tolist())
 
-    print("Probability of intfection jump:", a/parameters['Runs'])
+    # print("Probability of intfection jump:", a/parameters['Runs'])
 
     SusMat = np.column_stack(tuple(SusMat))
     InfMat = np.column_stack(tuple(InfMat))
@@ -151,6 +159,8 @@ def get_mean_se(parameters, output_dir):
     DailyTestedNegMat = np.column_stack(tuple(DailyTestedNegMat))
     CumTestedPosMat = np.column_stack(tuple(CumTestedPosMat))
     QuarantinedMat = np.column_stack(tuple(QuarantinedMat))
+    InfectedFacMat = np.column_stack(tuple(InfectedFacMat))
+    QuarantinedFacMat = np.column_stack(tuple(QuarantinedFacMat))
     
 
     SusMat = SusMat.transpose()
@@ -174,6 +184,8 @@ def get_mean_se(parameters, output_dir):
     DailyTestedNegMat = DailyTestedNegMat.transpose()
     CumTestedPosMat = CumTestedPosMat.transpose()
     QuarantinedMat = QuarantinedMat.transpose()
+    InfectedFacMat = InfectedFacMat.transpose()
+    QuarantinedFacMat = QuarantinedFacMat.transpose()
     
 
     # get standard error
@@ -198,7 +210,8 @@ def get_mean_se(parameters, output_dir):
     semDailyTestedNeg = scipy.stats.sem(DailyTestedNegMat)
     semCumTestedPos = scipy.stats.sem(CumTestedPosMat)
     semQuarantined = scipy.stats.sem(QuarantinedMat)
-
+    semInfectedFac = scipy.stats.sem(InfectedFacMat)
+    semQuarantinedFac = scipy.stats.sem(QuarantinedFacMat)
 
     # get mean
     meanSus = SusMat.mean(0)
@@ -222,18 +235,19 @@ def get_mean_se(parameters, output_dir):
     meanDailyTestedNeg = DailyTestedNegMat.mean(0)
     meanCumTestedPos = CumTestedPosMat.mean(0)
     meanQuarantined = QuarantinedMat.mean(0)
-
+    meanInfectedFac = InfectedFacMat.mean(0)
+    meanQuarantinedFac = QuarantinedFacMat.mean(0)
 
     updateCSV2(directory + 'mean.csv', meanSus, meanInf, meanCumInf, meanCumInfRes, meanCumInfStaff,
                                     meanDailyInf, meanDailyInfRes, meanDailyInfStaff, meannum_incub, 
                                     meanTransMat, meanSymMat, meanAsymMat, meanRec, meanResRec, 
                                     meanStafRec, meanDead, meanDailyTested, meanDailyTestedPos, 
-                                    meanDailyTestedNeg, meanCumTestedPos, meanQuarantined)
+                                    meanDailyTestedNeg, meanCumTestedPos, meanQuarantined, meanInfectedFac, meanQuarantinedFac)
     updateCSV2(directory + 'se.csv', semSus, semInf, semCumInf, semCumInfRes, semCumInfStaff,
                                     semDailyInf, semDailyInfRes, semDailyInfStaff, semnum_incub, 
                                     semTransMat, semSymMat, semAsymMat, semRec, semResRec, semStafRec,
                                     semDead, semDailyTested, semDailyTestedPos, semDailyTestedNeg,
-                                    semCumTestedPos, semQuarantined)
+                                    semCumTestedPos, semQuarantined, semInfectedFac, semQuarantinedFac)
     #updateCSV2(directory + title + '_se.csv', semSus, semInf, semCumInf, semDailyInf, semnum_incub, semAsymMat, semSymMat,
     #    semRec, semDead, semDailyDead, semHosp, sembreathMat, semrespMat, semicuMat, semDailyTestedMat, semSpreaderMat, semQuarantinedMat,
     #    semSymptomaticTestsMat, semContactTraceTestsMat, semExtraTestsMat, semPositive_SymptomaticTestsMat, semPositive_ContactTraceTestsMat, semPositive_ExtraTestsMat)

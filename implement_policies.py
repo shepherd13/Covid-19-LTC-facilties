@@ -18,8 +18,10 @@ class Policies:
 					if self.matric[facility].people[person].quarantine_status == -1:
 						self.replace_recovered_staff(day, person, facility)
 					
-				if (self.matric[facility].is_working(day%7, person)):
-					self.replace_dead_people(day, person, facility)
+				if (self.matric[facility].is_working(day%7, person)):		###########################################################################################################
+					self.replace_dead_people(day, person, facility)			########### check out if we need to change something over here ####  dead People might not have connections
+					if self.matric[facility].people[person].get_disease_state(day) > 0:
+						self.matric[facility].infected = True
 					if day > self.parameters['Policy Start Testing']:
 						self.testing(day, person, facility)
 					if self.matric[facility].people[person].get_test_state(day) == 1: #get_disease_state(day) in [2,3,4]:
@@ -29,9 +31,13 @@ class Policies:
 								self.replace_infected_staff(day, person, facility)
 				person += 1
 
-			if facility_positive_cases/(self.matric[facility].n_residents+self.matric[facility].n_staff) > self.parameters['Quarantine Location Infecion Rate']:
+			if facility_positive_cases > 0:
+				self.network.infected_facilities.add(facility)
+				self.matric[facility].start_masking_policy = 1
+			if (facility_positive_cases > self.parameters['Quarantine Location Infection Rate'] * (self.matric[facility].n_residents+self.matric[facility].n_staff)):
 				if facility not in self.network.isolated_facilities:
 					self.network.isolate_facility(day, facility)
+					self.matric[facility].quarantined = True
 
 
 	def replace_dead_people(self, day, person, facility):

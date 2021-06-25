@@ -1,8 +1,10 @@
-Output Directory: fnr_20
-Collect_Data_Facilitywise: 1
-Runs: 100
+Output Directory: ts_10
+Collect_Data_Facilitywise: 0
+Runs: 25
 Days: 180
-Facilities: 2
+Facilities: 81
+Facility residents: 100
+Facility staff: 50
 MALE_PERCENTAGE: 0.5
 TEMP_PERCENTAGE: 0.1
 CONTACTS_SS: 2
@@ -19,11 +21,11 @@ Daily baseline mortality rate: 0.001
 Daily covid mortality rate: 0.02
 Policy Start Masking: 0
 Masking efficiency: 0.38
-Quarantine Location Infecion Rate: 0.05
+Quarantine Location Infection Rate: 0.02
 Agent Quarantine Days: 14
 Policy Start Testing: -1
-Test Frequency: 7
-Test Result turnaround time: 1
+Test Frequency: 14
+Test Result turnaround time: 3
 False Positive Rate: 0
-False Negative Rate: 0.2
-threshold: 20
+False Negative Rate: 0.1
+threshold: 0
