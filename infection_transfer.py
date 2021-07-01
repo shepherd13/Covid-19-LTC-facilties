@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import math
 
 class InfectionTransfer:
 	def __init__(self, parameters, matric):
@@ -69,7 +70,7 @@ class ProbabilityPerInteraction(InfectionTransfer):
 		return [(self.daily_residents_infected, self.daily_staff_infected)]
 
 	def spread_per_interaction(self, person_1, person_2, day, facility):
-		infection_probability = (1 - self.parameters['Masking efficiency']*self.matric[facility].start_masking_policy) * self.parameters['Probability of infection per infectious contact']
+		infection_probability = (1 - self.parameters['Masking efficiency'] * self.matric[facility].start_masking_policy) * self.parameters['Probability of infection per infectious contact']
 		person_1_disease_state = self.matric[facility].people[person_1].get_disease_state(day)
 		person_2_disease_state = self.matric[facility].people[person_2].get_disease_state(day)
 
@@ -82,6 +83,46 @@ class ProbabilityPerInteraction(InfectionTransfer):
 			if person_1_disease_state == 0 and (random.choices([0, 1], [1 - infection_probability, infection_probability])[0] == 1):
 				self.matric[facility].people[person_1].update_disease_state(day, 1)   # infected, incubating
 				self.update_daily_infected(person_1, facility, day)
+
+
+class GroupAirborneTransmission(InfectionTransfer):
+	def transfer(self, day):
+		self.daily_residents_infected = [0] * len(self.matric)
+		self.daily_staff_infected = [0] * len(self.matric)
+		for fac in range(len(self.matric)):
+			total_quanta = 0
+			initially_infected = []
+			for person in range(self.matric[fac].n_residents + self.matric[fac].n_staff):
+				if self.matric[fac].is_working(day%7, person):
+					if self.matric[fac].people[person].get_disease_state(day) in [2,3,4]:
+						initially_infected.append(person)
+						ratio = 1 - (self.parameters['Masking efficiency'] * self.matric[fac].start_masking_policy)
+						total_quanta += self.parameters['Quanta Rate'] * ratio
+
+			if total_quanta > 0:
+				for person in range(self.matric[fac].n_residents + self.matric[fac].n_staff):
+					if self.matric[fac].is_working(day%7, person):
+						if self.matric[fac].people[person].get_disease_state(day) == 0:
+							transmission_probability = self.wells_riley(total_quanta)
+							if (random.choices([0, 1], [1.0 - transmission_probability, transmission_probability])[0] == 1):
+								self.matric[fac].people[person].update_disease_state(day, 1)  # infected, incubating
+
+		return [(self.daily_residents_infected, self.daily_staff_infected)]
+
+	# returns probability of getting infected by airborne infection
+	# pulmonary ventilation rate is in (m3/s)
+	# quanta rate is in (quanta/h), hard to calculate
+	# time is the number of hours
+	# room ventilation rate is in (AC/h)
+	# room volume is in (m3)
+	def wells_riley(self, total_quanta):
+		prob = 1.0 - math.exp(-(total_quanta * (self.parameters['Pulmonary ventilation rate']
+				* (1.0 - self.parameters['Masking efficiency'])) * self.parameters['Social time spent'])
+				/ (self.parameters['Ventilation Rate'] * self.parameters['Room volume']))
+		return prob
+
+	# def diff_wells_riley(time, num_infected, room_volume, room_vent_rate, mask_efficiency, pulm_vent_rate=0.48):
+	# 	return (num_infected * (pulm_vent_rate * (1.0 - mask_efficiency)) * time) / (room_vent_rate * room_volume)
 
 
 class OutsideTransmission(InfectionTransfer):

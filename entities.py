@@ -31,7 +31,7 @@ class Person:
 		self.disease_state = [0] * int(self.parameters['Days'])
 		self.last_updated = -1
 		self.test_state = [0] * int(self.parameters['Days'])
-		self.last_tested = -self.parameters['Test Frequency']-1
+		self.last_tested = -self.parameters['Test 1 Frequency']-1
 		self.days_infected = 0
 		self.incub_end = random.choice([5,6,7])
 		self.infection_end = 7.8
@@ -57,26 +57,14 @@ class Person:
 	def set_quarantine_status(self, status):
 		self.quarantine_status = status
 
-	def update_quarantine_status(self):
-		if self.quarantine_status == 1:
-			self.quarantine_days += 1
-			if self.quarantine_days == self.parameters['Agent Quarantine Days']:
-				self.set_quarantine_status(-1)		## 0: Not Quarantined, 1 Currently Quarantined, -1 Quarantine Over
-		elif self.quarantine_status == -1:
-			self.quarantine_days = 0
-			self.set_quarantine_status(0)
+	def update_quarantine_location(self, facility):
+		self.qurantine_location = facility
 
 	def update_disease_state(self, day, state):
 		self.disease_state[day] = state
 
 	def get_disease_state(self, day):
 		return self.disease_state[day]
-
-	# def update_days_infeted(self, day, state):
-	# 	self.disease_state[day] = state
-
-	# def get_days_infected(self, day):
-	# 	return self.days_infected
 
 	def class_name(self):
 		return self.__class__.__name__
@@ -88,6 +76,22 @@ class Resident(Person):
 		#self.occupancy = occupancy
 		super().__init__(parameters)
 
+	def get_testing_parameters(self):
+		testing_parameters = {'Test Frequency': self.parameters['Test 1 Frequency'],
+							  'Test Result turnaround time': self.parameters['Test 1 Result turnaround time'],
+							  'False Positive Rate': self.parameters['Test 1 False Positive Rate'],
+							  'False Negative Rate': self.parameters['Test 1 False Negative Rate']}
+		return testing_parameters
+
+	def update_quarantine_status(self):
+		if self.quarantine_status == 1:
+			self.quarantine_days += 1
+			if self.quarantine_days == self.parameters['Resident Quarantine Days']:
+				self.set_quarantine_status(-1)		## 0: Not Quarantined, 1 Currently Quarantined, -1 Quarantine Over
+		elif self.quarantine_status == -1:
+			self.quarantine_days = 0
+			self.set_quarantine_status(0)
+
 
 class Staff(Person):
 	def __init__(self, employment_type, parameters, shared_facilities):
@@ -98,6 +102,19 @@ class Staff(Person):
 	def update_shared_facilities(self, facility):
 		self.shared_facilities.append(facility)
 
-	def update_qurantine_location(self, facility):
-		self.qurantine_location = facility
 
+	def get_testing_parameters(self):
+		testing_parameters = {'Test Frequency': self.parameters['Test 2 Frequency'],
+							  'Test Result turnaround time': self.parameters['Test 2 Result turnaround time'],
+							  'False Positive Rate': self.parameters['Test 2 False Positive Rate'],
+							  'False Negative Rate': self.parameters['Test 2 False Negative Rate']}
+		return testing_parameters
+
+	def update_quarantine_status(self):
+		if self.quarantine_status == 1:
+			self.quarantine_days += 1
+			if self.quarantine_days == self.parameters['Staff Quarantine Days']:
+				self.set_quarantine_status(-1)		## 0: Not Quarantined, 1 Currently Quarantined, -1 Quarantine Over
+		elif self.quarantine_status == -1:
+			self.quarantine_days = 0
+			self.set_quarantine_status(0)

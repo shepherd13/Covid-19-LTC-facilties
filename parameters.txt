@@ -10,22 +10,33 @@ TEMP_PERCENTAGE: 0.1
 CONTACTS_SS: 2
 CONTACTS_SR: 12
 CONTACTS_RS: 6
-CONTACTS_RR: 0
+CONTACTS_RR: 4
+CONTACTS_RR_reduced: 2
+Quanta Rate: 20
+Ventilation Rate: 4
+Room volume: 700
+Pulmonary ventilation rate: 0.48
+Social time spent: 2
 Initial Infection Rate: 0.05
 Probability of infection per infectious contact: 0.02
 Resident Asymptomatic Rate: 0.20
 Staff Asymptomatic Rate: 0.40
 Transmission rate type: static
-Outside Transmission Rate: 0.001
+Outside Transmission Rate: 0.0001
 Daily baseline mortality rate: 0.001
 Daily covid mortality rate: 0.02
 Policy Start Masking: 0
 Masking efficiency: 0.38
 Quarantine Location Infection Rate: 0.02
-Agent Quarantine Days: 14
+Staff Quarantine Days: 14
+Resident Quarantine Days: 180
 Policy Start Testing: -1
-Test Frequency: 14
-Test Result turnaround time: 3
-False Positive Rate: 0
-False Negative Rate: 0.1
+Test 1 Frequency: 7
+Test 1 Result turnaround time: 1
+Test 1 False Positive Rate: 0
+Test 1 False Negative Rate: 0.1
+Test 2 Frequency: 7
+Test 2 Result turnaround time: 1
+Test 2 False Positive Rate: 0
+Test 2 False Negative Rate: 0.1
 threshold: 0

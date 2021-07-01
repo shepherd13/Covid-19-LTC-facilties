@@ -334,9 +334,11 @@ class GenerateNetwork:
 				temp_workers = [f.people.index(temp) for temp in designated_temps[f.facility_code]]
 				daily_contacts = np.zeros([f.n_residents + f.n_staff, f.n_residents + f.n_staff])
 				todays_staff = list(range(f.n_residents, f.n_residents + f.n_p_staff)) + temp_workers
-				# Resident-Staff interactions
+
 				staff_available = copy.deepcopy(todays_staff)
+				residents_available = list(range(f.n_residents))
 				for r in range(f.n_residents):
+					# Resident-Staff interactions
 					staff_contacts = 0
 					while (staff_contacts != self.parameters['CONTACTS_RS']):
 						sc = random.choice(staff_available)
@@ -346,13 +348,31 @@ class GenerateNetwork:
 						if sum(daily_contacts[sc]) >= self.parameters['CONTACTS_SR']:
 							staff_available.remove(sc)
 
-				# resident_contacts = 0
-				# while(resident_contacts != CONTACTS_RR):
-				# 	rc = random.randint(0, RESIDENTS-1)
-				# 	if rc != r:
-				# 		daily_contacts[r,rc] += 1
-				# 		daily_contacts[rc,r] += 1
-				# 		resident_contacts += 1
+					# Resident-Resident interactions
+					# resident_contacts = np.sum(daily_contacts[r][:f.n_residents])
+					# while(resident_contacts != self.parameters['CONTACTS_RR']):
+					# 	if len(residents_available) == 1 and residents_available[0] == r:
+					# 		break
+					# 	rc = random.choice(residents_available)
+					# 	if sum(daily_contacts[rc][:f.n_residents]) == self.parameters[
+					# 		'CONTACTS_RR']:
+					# 		residents_available.remove(rc)
+					# 		continue
+					# 	if rc != r:
+					# 		daily_contacts[r,rc] += 1
+					# 		daily_contacts[rc,r] += 1
+					# 		resident_contacts += 1
+
+				# Resident-Staff interactions
+				degree_count = 0
+				while(degree_count < f.n_residents * self.parameters['CONTACTS_RR']):
+					person_1 = random.choice(residents_available)
+					ra = [person for person in residents_available if person != person_1]
+					person_2 = random.choice(ra)
+					daily_contacts[person_1, person_2] += 1
+					daily_contacts[person_2, person_1] += 1
+					degree_count += 2
+
 
 				# Staff-Staff interactions
 				staff_available = copy.deepcopy(todays_staff)
@@ -407,7 +427,13 @@ class GenerateNetwork:
 
 	def update_interactions_when_person_quarantines(self, facility, person_id):
 		# print("################ QUARANTINE STARTS for:", person_id)
-		if person_id < self.matric[facility].n_residents + self.matric[facility].n_p_staff:
+		if person_id < self.matric[facility].n_residents:
+			for day in range(7):
+				for id in range(self.matric[facility].n_residents):
+					self.matric[facility].daily_contacts[day][person_id][id] = 0
+					self.matric[facility].daily_contacts[day][id][person_id] = 0
+
+		elif person_id < self.matric[facility].n_residents + self.matric[facility].n_p_staff:
 			# print("\n")
 			# print("Permanent Staff", person_id)
 			# print("Facility:", facility)
@@ -428,7 +454,7 @@ class GenerateNetwork:
 				# print("After")
 				# print("Person_ID sum", person_id, self.matric[facility].daily_contacts[day][:,person_id].sum(0))
 				# print("Replacement_ID sum", replacement_id, self.matric[facility].daily_contacts[day][:,replacement_id].sum(0))
-		else:
+		elif person_id >= self.matric[facility].n_residents + self.matric[facility].n_p_staff:
 			#quarantined_id = person_id - (self.matric[facility].n_residents + self.matric[facility].n_p_staff)
 			employment_type = 3				#Permanent_filler = 2, Temporary_filler = 3
 			shared_facilities = self.matric[facility].people[person_id].shared_facilities
@@ -512,85 +538,22 @@ class GenerateNetwork:
 					self.matric[fac].n_t_staff -= 1
 					self.matric[fac].n_staff -= 1
 
+	def social_distancing(self, facility):
+		for day in range(7):
+			for i in range(self.matric[facility].n_residents):
+				for j in range(self.matric[facility].n_residents):
+					self.matric[facility].daily_contacts[day][i,j] = 0
+			degree_count = 0
+			residents_available = [r for r in range(self.matric[facility].n_residents) if self.matric[facility].people[r].quarantine_status != 1]
+			residents_available_count = len(residents_available)
+			while (degree_count < residents_available_count * self.parameters['CONTACTS_RR_reduced']):
+				person_1 = random.choice(residents_available)
+				ra = [person for person in residents_available if person != person_1]
+				person_2 = random.choice(ra)
+				self.matric[facility].daily_contacts[day][person_1, person_2] += 1
+				self.matric[facility].daily_contacts[day][person_2, person_1] += 1
+				degree_count += 2
 
-	# def isolate_facility(self, day, facility):
-	# 	quarantine_day = day%7
-	# 	self.isolated_facilities.append(facility)
-	# 	#remaining_facilities = [fac for fac in range(len(self.matric)) if fac not in self.isolated_facilities and self.matric[fac].affiliation == self.matric[facility].affiliation]
-	# 	facility_ids = np.nonzero(self.facilities_temp_sharing_matrix[self.matric[facility].facility_code])[0]
-	# 	print('FACILITY:', facility)
-	# 	print('shared facility way 1:', facility_ids)
-	# 	for t in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
-	# 		print('shared facility way 2:', self.matric[facility].people[t].shared_facilities)
-	# 	remaining_facilities = [fac for fac in range(len(self.matric)) if self.matric[fac].facility_code in facility_ids]
-	# 	# print('shared facility way 3:', remaining_facilities)
-	# 	## Finds temp staff who are working in the current facility on the day of the quarantine
-	# 	## Finds the remaining staff who can work and are not quarantined
-	# 	isolated_temp_staff = []#np.zeros(self.matric[facility].n_t_staff)
-	# 	# remaining_temp_staff = []#np.zeros(self.matric[facility].n_t_staff)
-	# 	for staff in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
-	# 		if (self.matric[facility].is_working(quarantine_day%7, staff)):
-	# 			isolated_temp_staff.append(staff - (self.matric[facility].n_residents + self.matric[facility].n_p_staff))
-	# 		# elif self.matric[facility].daily_contacts[quarantine_day%7][staff].quarantine_days == 0:
-	# 		# 	remaining_temp_staff.append(staff - (self.matric[facility].n_residents + self.matric[facility].n_p_staff))
-	#
-	# 	# print("Isolated Temp Staff:", isolated_temp_staff)
-	# 	## Main Facility ##
-	# 	for day in range(7):
-	# 		# Find the workers who are working on current day
-	# 		working_temp_pool = []
-	# 		for staff in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
-	# 			if (self.matric[facility].is_working(day%7, staff)) and (staff - (self.matric[facility].n_residents + self.matric[facility].n_p_staff) not in isolated_temp_staff):
-	# 				working_temp_pool.append(staff - (self.matric[facility].n_residents + self.matric[facility].n_p_staff))
-	# 		random.shuffle(working_temp_pool)
-	#
-	# 		# print("\n")
-	# 		# print("BEFORE")
-	# 		# print("**** MAIN FACILITY *****")
-	# 		# print("Facility:", facility)
-	# 		# print("Total People", self.matric[facility].n_residents, self.matric[facility].n_p_staff, self.matric[facility].n_t_staff)
-	# 		# print("Shape of facility:", self.matric[facility].daily_contacts[day].shape)
-	# 		# print("Working Temp Pool:", working_temp_pool)
-	# 		# print("Before")
-	# 		# print("SUM:", self.matric[facility].daily_contacts[day][:,list(range(self.matric[facility].n_residents+self.matric[facility].n_p_staff, self.matric[facility].n_residents+self.matric[facility].n_staff))].sum(0))
-	#
-	# 		# for fac in remaining_facilities:
-	# 		# 	print("\n")
-	# 		# 	print("##### OTHER FACILITY #####")
-	# 		# 	print("Facility:", fac)
-	# 		# 	print("Total People", self.matric[fac].n_residents, self.matric[fac].n_p_staff, self.matric[fac].n_t_staff)
-	# 		# 	print("Shape of facility:", self.matric[fac].daily_contacts[day].shape)
-	# 		# 	print("SUM:", self.matric[fac].daily_contacts[day][:,list(range(self.matric[fac].n_residents+self.matric[fac].n_p_staff, self.matric[fac].n_residents+self.matric[fac].n_staff))].sum(0))
-	#
-	# 		for staff in isolated_temp_staff:
-	# 			# If the isolated staff is not working today
-	# 			if (not self.matric[facility].is_working(day%7, staff + (self.matric[facility].n_residents + self.matric[facility].n_p_staff))):
-	# 				# print("Going insidefor staff:", staff)
-	# 				designated_staff = staff + (self.matric[facility].n_residents + self.matric[facility].n_p_staff)
-	# 				available_staff = working_temp_pool[0]
-	# 				# print("Replacement staff:", available_staff)
-	# 				replacement_staff = available_staff + (self.matric[facility].n_residents + self.matric[facility].n_p_staff)
-	# 				working_temp_pool = working_temp_pool[1:]
-	# 				self.swap_interactions(day, facility, replacement_staff, designated_staff)
-	# 				# Find the facility where it is working and replace the interactions
-	# 				for fac in remaining_facilities:
-	# 					if (fac in self.matric[facility].people[replacement_staff].shared_facilities) and (fac in self.matric[facility].people[designated_staff].shared_facilities):
-	# 						if (self.matric[fac].is_working(day%7, np.where(np.array(self.matric[fac].people) == self.matric[facility].people[designated_staff])[0][0])):# staff + (self.matric[fac].n_residents + self.matric[fac].n_p_staff))):
-	# 							designated_staff = np.where(np.array(self.matric[fac].people) == self.matric[facility].people[designated_staff])[0][0]
-	# 							replacement_staff = np.where(np.array(self.matric[fac].people) == self.matric[facility].people[replacement_staff])[0][0]#available_staff + (self.matric[fac].n_residents + self.matric[fac].n_p_staff)
-	# 							self.swap_interactions(day, fac, replacement_staff, designated_staff)
-	# 							break
-	#
-	# 		# print("AFTER")
-	# 		# print("**** MAIN FACILITY *****")
-	# 		# print("SUM:", self.matric[facility].daily_contacts[day][:,list(range(self.matric[facility].n_residents+self.matric[facility].n_p_staff, self.matric[facility].n_residents+self.matric[facility].n_staff))].sum(0))
-	#
-	# 		# for fac in remaining_facilities:
-	# 		# 	print("\n")
-	# 		# 	print("##### OTHER FACILITY #####")
-	# 		# 	print("Facility:", fac)
-	# 		# 	print("SUM:", self.matric[fac].daily_contacts[day][:,list(range(self.matric[fac].n_residents+self.matric[fac].n_p_staff, self.matric[fac].n_residents+self.matric[fac].n_staff))].sum(0))
-	  
 	def isolate_facility(self, day, facility):
 		quarantine_day = day%7
 		self.isolated_facilities.append(facility)

@@ -9,7 +9,7 @@ import time
 import copy
 
 from network_generator import GenerateNetwork
-from infection_transfer import ProbabilityPerInteraction, InitialInfection, OutsideTransmission
+from infection_transfer import ProbabilityPerInteraction, InitialInfection, OutsideTransmission, GroupAirborneTransmission
 from disease_progression import Covid19_DiseaseProgression
 from collect_data import Collect_data
 from implement_policies import Policies
@@ -54,6 +54,7 @@ def run_sim(run, parameters, network):
 	# Infection Transfer Models
 	ii = InitialInfection(parameters, interactions)
 	ppi = ProbabilityPerInteraction(parameters, interactions)
+	#gat = GroupAirborneTransmission(parameters, interactions)
 	ot = OutsideTransmission(parameters, interactions)
 	# Disease Progression Model
 	dp = Covid19_DiseaseProgression(parameters, interactions)
@@ -67,7 +68,8 @@ def run_sim(run, parameters, network):
 	for day in range(days):
 		# print("Day:", day)
 		daily_infected += ppi.transfer(day)
-		#daily_infected += ot.transfer(day)
+		#daily_infected += gat.transfer(day)
+		daily_infected += ot.transfer(day)
 		dp.disease_progression(day)
 		cd.update_states(day, daily_infected)
 		rp.implement_policies(day)
@@ -91,12 +93,12 @@ def main(param_file):
 		network = copy.deepcopy(gn)
 		# print("############################################################## Run:", run)
 		# print("Before:",network.matric[0].n_residents, network.matric[0].n_staff,"::",network.matric[1].n_residents, network.matric[1].n_staff, "::", network.matric[2].n_residents, network.matric[2].n_staff)
-		run_sim(run, parameters, network)
+		# run_sim(run, parameters, network)
 		# print("After:",network.matric[0].n_residents, network.matric[0].n_staff,"::",network.matric[1].n_residents, network.matric[1].n_staff, "::", network.matric[2].n_residents, network.matric[2].n_staff)
-		# p.apply_async(run_sim, args=(run, parameters, network, ))
-		# del network
-	# p.close()
-	# p.join()
+		p.apply_async(run_sim, args=(run, parameters, network, ))
+		del network
+	p.close()
+	p.join()
 
 	if parameters['Collect_Data_Facilitywise'] == 0:
 		get_mean_se(parameters, parameters['Output Directory'])

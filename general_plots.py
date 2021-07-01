@@ -3926,39 +3926,264 @@ import os
 
 
 
+# ##############################################################################################
+# #                                       LTC Plots(High Prevalance rate)
+# ##############################################################################################
+
+# Outputs = 'prev_rate_high_0.001'
+# df_mean_1 = pd.read_csv(Outputs+"/all_policies/mean.csv")
+# df_mean_2 = pd.read_csv(Outputs+"/without_policies/mean.csv")
+# df_mean_3 = pd.read_csv(Outputs+"/without_quarantining_facilities/mean.csv")
+# # df_mean_4 = pd.read_csv(Outputs+"/TQP/mean.csv")
+# # df_mean_5 = pd.read_csv(Outputs+"/M/mean.csv")
+# # df_mean_6 = pd.read_csv(Outputs+"/NP/mean.csv")
+
+# df_se_1 = pd.read_csv(Outputs+"/all_policies/se.csv")
+# df_se_2 = pd.read_csv(Outputs+"/without_policies/se.csv")
+# df_se_3 = pd.read_csv(Outputs+"/without_quarantining_facilities/se.csv")
+# # df_se_4 = pd.read_csv(Outputs+"/TQP/se.csv")
+# # df_se_5 = pd.read_csv(Outputs+"/M/se.csv")
+# # df_se_6 = pd.read_csv(Outputs+"/NP/se.csv")
+
+# CI1 = df_mean_1['Cumulative Infected']
+# CI2 = df_mean_2['Cumulative Infected']
+# CI3 = df_mean_3['Cumulative Infected']
+# # CI4 = df_mean_4['Cumulative Infected']
+# # CI5 = df_mean_5['Cumulative Infected']
+# # CI6 = df_mean_6['Cumulative Infected']
+
+# CI1_se = df_se_1['Cumulative Infected']
+# CI2_se = df_se_2['Cumulative Infected']
+# CI3_se = df_se_3['Cumulative Infected']
+# # CI4_se = df_se_4['Cumulative Infected']
+# # CI5_se = df_se_5['Cumulative Infected']
+# # CI6_se = df_se_6['Cumulative Infected']
+
+# length = len(CI1)
+# fig1 = plt.figure()
+
+# # plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff=4%')
+# plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='Masking,\nTesting(Quarantining Infected Staff)\nQuarantining Facilities')
+# plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='No Policies')
+# plt.errorbar(range(0,length), CI3, 1.96*CI3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), CI4, 1.96*CI4_se, label='Testing(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), CI5, 1.96*CI5_se, label='Masking')
+# # plt.errorbar(range(0,length), CI6, 1.96*CI6_se, label='No Policy')
+
+# plt.xlabel('Num Days', figure=fig1)
+# plt.ylabel('Num People', figure=fig1)
+# title = "Change in Cumulative infected people based on different policies"
+# plt.title(title)
+# plt.grid(True)
+
+# plt.legend(bbox_to_anchor=(1.05, 1.0), loc=2, borderaxespad=0., prop={'size': 12})
+
+# textstr = '\n'.join(['Staff: 50',
+#                     'Residents: 100',
+#                     'Test Result turnaround time: 1 days',
+#                     'Test False Negative Rate: 10%',
+#                     'Temp Staff: 10%',
+#                     'Outside Infection rate: 0.1%'])
+# props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+# plt.text(1.06, 0.03, textstr, transform=plt.gca().transAxes, bbox=props)
+# # fig1.set_figheight(8)
+# # fig1.set_figwidth(8)
+# #plt.show()
+# fig1.savefig(title + '.png', bbox_inches='tight')
+
+
+# IF1 = df_mean_1['Infected Facilities']
+# IF2 = df_mean_2['Infected Facilities']
+# IF3 = df_mean_3['Infected Facilities']
+# # IF4 = df_mean_4['Infected Facilities']
+# # IF5 = df_mean_5['Infected Facilities']
+# # IF6 = df_mean_6['Infected Facilities']
+
+# IF1_se = df_se_1['Infected Facilities']
+# IF2_se = df_se_2['Infected Facilities']
+# IF3_se = df_se_3['Infected Facilities']
+# # IF4_se = df_se_4['Infected Facilities']
+# # IF5_se = df_se_5['Infected Facilities']
+# # IF6_se = df_se_6['Infected Facilities']
+
+# length = len(CI1)
+# fig2 = plt.figure()
+
+# # plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff=4%')
+# plt.errorbar(range(0,length), IF1, 1.96*IF1_se, label='Masking,\nTesting(Quarantining Infected Staff)\nQuarantining Facilities')
+# plt.errorbar(range(0,length), IF2, 1.96*IF2_se, label='No Policies')
+# plt.errorbar(range(0,length), IF3, 1.96*IF3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), IF3, 1.96*IF3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), IF4, 1.96*IF4_se, label='Testing(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), IF5, 1.96*IF5_se, label='Masking')
+# # plt.errorbar(range(0,length), IF6, 1.96*IF6_se, label='No Policy')
+
+# plt.xlabel('Num Days', figure=fig2)
+# plt.ylabel('Num Facilities', figure=fig2)
+# title = "Change in Cumulative Infected Facilites based on different policies"
+# plt.title(title)
+# plt.grid(True)
+
+# plt.legend(bbox_to_anchor=(1.05, 1.0), loc=2, borderaxespad=0., prop={'size': 12})
+
+# textstr = '\n'.join(['Staff: 50',
+#                     'Residents: 100',
+#                     'Test Result turnaround time: 1 days',
+#                     'False Negative Rate: 10%',
+#                     'Temp Staff: 10%',
+#                     'Outside Infection rate: 0.1%'])
+# props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+# plt.text(1.06, 0.03, textstr, transform=plt.gca().transAxes, bbox=props)
+# # fig1.set_figheight(8)
+# # fig1.set_figwidth(8)
+# #plt.show()
+# fig2.savefig(title + '.png', bbox_inches='tight')
+
+
+
+# QF1 = df_mean_1['Quarantined Facilities']
+# QF2 = df_mean_2['Quarantined Facilities']
+# QF3 = df_mean_3['Quarantined Facilities']
+# # QF4 = df_mean_4['Quarantined Facilities']
+# # QF5 = df_mean_5['Quarantined Facilities']
+# # QF6 = df_mean_6['Quarantined Facilities']
+
+# QF1_se = df_se_1['Quarantined Facilities']
+# QF2_se = df_se_2['Quarantined Facilities']
+# QF3_se = df_se_3['Quarantined Facilities']
+# # QF4_se = df_se_4['Quarantined Facilities']
+# # QF5_se = df_se_5['Quarantined Facilities']
+# # QF6_se = df_se_6['Quarantined Facilities']
+
+# length = len(CI1)
+# fig3 = plt.figure()
+
+# # plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff=4%')
+# plt.errorbar(range(0,length), QF1, 1.96*QF1_se, label='Masking,\nTesting(Quarantining Infected Staff)\nQuarantining Facilities')
+# plt.errorbar(range(0,length), QF2, 1.96*QF2_se, label='No Policies')
+# plt.errorbar(range(0,length), QF3, 1.96*QF3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), QF3, 1.96*QF3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), QF4, 1.96*QF4_se, label='Testing(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), QF5, 1.96*QF5_se, label='Masking')
+# # plt.errorbar(range(0,length), QF6, 1.96*QF6_se, label='No Policy')
+
+# plt.xlabel('Num Days', figure=fig3)
+# plt.ylabel('Num Facilities', figure=fig3)
+# title = "Change in Cumulative Quarantined Facilites based on different policies"
+# plt.title(title)
+# plt.grid(True)
+
+# plt.legend(bbox_to_anchor=(1.05, 1.0), loc=2, borderaxespad=0., prop={'size': 12})
+
+# textstr = '\n'.join(['Staff: 50',
+#                     'Residents: 100',
+#                     'Test Result turnaround time: 1 days',
+#                     'False Negative Rate: 10%',
+#                     'Temp Staff: 10%',
+#                     'Outside Infection rate: 0.1%'])
+# props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+# plt.text(1.06, 0.03, textstr, transform=plt.gca().transAxes, bbox=props)
+# # fig1.set_figheight(8)
+# # fig1.set_figwidth(8)
+# #plt.show()
+# fig3.savefig(title + '.png', bbox_inches='tight')
+
+
+
+# DI1 = df_mean_1['Daily Infected']
+# DI2 = df_mean_2['Daily Infected']
+# DI3 = df_mean_3['Daily Infected']
+# # QF4 = df_mean_4['Quarantined Facilities']
+# # QF5 = df_mean_5['Quarantined Facilities']
+# # QF6 = df_mean_6['Quarantined Facilities']
+
+# DI1_se = df_se_1['Daily Infected']
+# DI2_se = df_se_2['Daily Infected']
+# DI3_se = df_se_3['Daily Infected']
+# # QF4_se = df_se_4['Quarantined Facilities']
+# # QF5_se = df_se_5['Quarantined Facilities']
+# # QF6_se = df_se_6['Quarantined Facilities']
+
+# length = len(CI1)
+# fig3 = plt.figure()
+
+# # plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff=4%')
+# plt.errorbar(range(0,length), DI1, 1.96*DI1_se, label='Masking,\nTesting(Quarantining Infected Staff)\nQuarantining Facilities')
+# plt.errorbar(range(0,length), DI2, 1.96*DI2_se, label='No Policies')
+# plt.errorbar(range(0,length), DI3, 1.96*DI3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), QF3, 1.96*QF3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), QF4, 1.96*QF4_se, label='Testing(Quarantining Infected Staff)')
+# # plt.errorbar(range(0,length), QF5, 1.96*QF5_se, label='Masking')
+# # plt.errorbar(range(0,length), QF6, 1.96*QF6_se, label='No Policy')
+
+# plt.xlabel('Num Days', figure=fig3)
+# plt.ylabel('Num Facilities', figure=fig3)
+# title = "Change in Daily Infected people based on different policies"
+# plt.title(title)
+# plt.grid(True)
+
+# plt.legend(bbox_to_anchor=(1.05, 1.0), loc=2, borderaxespad=0., prop={'size': 12})
+
+# textstr = '\n'.join(['Staff: 50',
+#                     'Residents: 100',
+#                     'Test Result turnaround time: 1 days',
+#                     'False Negative Rate: 10%',
+#                     'Temp Staff: 10%',
+#                     'Outside Infection rate: 0.1%'])
+# props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+# plt.text(1.06, 0.03, textstr, transform=plt.gca().transAxes, bbox=props)
+# # fig1.set_figheight(8)
+# # fig1.set_figwidth(8)
+# #plt.show()
+# fig3.savefig(title + '.png', bbox_inches='tight')
+
+
+
+
+
 ##############################################################################################
-#										LTC Plots
+#                                       LTC Plots(Low Prevalance rate)
 ##############################################################################################
 
+Outputs = 'prev_rate_low_0.0001'
+df_mean_1 = pd.read_csv(Outputs+"/without_policies/mean.csv")
+df_mean_2 = pd.read_csv(Outputs+"/ts_10_qf_strict_testing/mean.csv")
+df_mean_3 = pd.read_csv(Outputs+"/ts_10_qf_relaxed_testing_3_14/mean.csv")
+# df_mean_4 = pd.read_csv(Outputs+"/TQP/mean.csv")
+# df_mean_5 = pd.read_csv(Outputs+"/M/mean.csv")
+# df_mean_6 = pd.read_csv(Outputs+"/NP/mean.csv")
 
-df_mean_1 = pd.read_csv("Outputs/all_policies/mean.csv")
-df_mean_2 = pd.read_csv("Outputs/facilities_not_quarantined/mean.csv")
-df_mean_3 = pd.read_csv("Outputs/no_testing/mean.csv")
-df_mean_4 = pd.read_csv("Outputs/no_policy/mean.csv")
-
-df_se_1 = pd.read_csv("Outputs/all_policies/se.csv")
-df_se_2 = pd.read_csv("Outputs/facilities_not_quarantined/se.csv")
-df_se_3 = pd.read_csv("Outputs/no_testing/se.csv")
-df_se_4 = pd.read_csv("Outputs/no_policy/se.csv")
+df_se_1 = pd.read_csv(Outputs+"/without_policies/se.csv")
+df_se_2 = pd.read_csv(Outputs+"/ts_10_qf_strict_testing/se.csv")
+df_se_3 = pd.read_csv(Outputs+"/ts_10_qf_relaxed_testing_3_14/se.csv")
+# df_se_4 = pd.read_csv(Outputs+"/TQP/se.csv")
+# df_se_5 = pd.read_csv(Outputs+"/M/se.csv")
+# df_se_6 = pd.read_csv(Outputs+"/NP/se.csv")
 
 CI1 = df_mean_1['Cumulative Infected']
 CI2 = df_mean_2['Cumulative Infected']
 CI3 = df_mean_3['Cumulative Infected']
-CI4 = df_mean_4['Cumulative Infected']
+# CI4 = df_mean_4['Cumulative Infected']
+# CI5 = df_mean_5['Cumulative Infected']
+# CI6 = df_mean_6['Cumulative Infected']
 
 CI1_se = df_se_1['Cumulative Infected']
 CI2_se = df_se_2['Cumulative Infected']
 CI3_se = df_se_3['Cumulative Infected']
-CI4_se = df_se_4['Cumulative Infected']
+# CI4_se = df_se_4['Cumulative Infected']
+# CI5_se = df_se_5['Cumulative Infected']
+# CI6_se = df_se_6['Cumulative Infected']
 
-length = 180
+length = len(CI1)
 fig1 = plt.figure()
 
 # plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff=4%')
-plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='Masking,\nQuarantining Facility,\nTesting')
-plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Masking,\nTesting')
-plt.errorbar(range(0,length), CI3, 1.96*CI3_se, label='Masking')
-plt.errorbar(range(0,length), CI4, 1.96*CI4_se, label='No Policy')
+plt.errorbar(range(0,length), CI1, 1.96*CI1_se, label='No Policies')
+plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Agressive Testing and Quarantining\nQuarantining Facilities')
+plt.errorbar(range(0,length), CI3, 1.96*CI3_se, label='Relaxed Testing and Quarantining\nQuarantining Facilities')
+# plt.errorbar(range(0,length), CI4, 1.96*CI4_se, label='Testing(Quarantining Infected Staff)')
+# plt.errorbar(range(0,length), CI5, 1.96*CI5_se, label='Masking')
+# plt.errorbar(range(0,length), CI6, 1.96*CI6_se, label='No Policy')
 
 plt.xlabel('Num Days', figure=fig1)
 plt.ylabel('Num People', figure=fig1)
@@ -3966,21 +4191,166 @@ title = "Change in Cumulative infected people based on different policies"
 plt.title(title)
 plt.grid(True)
 
-plt.legend(bbox_to_anchor=(1.05, 0.90), loc=2, borderaxespad=0., prop={'size': 12})
+plt.legend(bbox_to_anchor=(1.05, 1.0), loc=2, borderaxespad=0., prop={'size': 12})
 
 textstr = '\n'.join(['Staff: 50',
-					'Residents: 100',
-					'Test Frequency: 14 days',
-					'Test Result turnaround time: 3 days',
-					'False Negative Rate: 10%',
-					 'Temp Staff: 10%'])
+                    'Residents: 100',
+                    'Test Result turnaround time: 1 days',
+                    'Test False Negative Rate: 10%',
+                    'Temp Staff: 10%',
+                    'Outside Infection rate: 0.01%'])
 props = dict(boxstyle='round', facecolor='white', alpha=0.15)
-plt.text(1.06, 0.05, textstr, transform=plt.gca().transAxes, bbox=props)
+plt.text(1.06, 0.03, textstr, transform=plt.gca().transAxes, bbox=props)
 # fig1.set_figheight(8)
 # fig1.set_figwidth(8)
 #plt.show()
 fig1.savefig(title + '.png', bbox_inches='tight')
 
+
+IF1 = df_mean_1['Infected Facilities']
+IF2 = df_mean_2['Infected Facilities']
+IF3 = df_mean_3['Infected Facilities']
+# IF4 = df_mean_4['Infected Facilities']
+# IF5 = df_mean_5['Infected Facilities']
+# IF6 = df_mean_6['Infected Facilities']
+
+IF1_se = df_se_1['Infected Facilities']
+IF2_se = df_se_2['Infected Facilities']
+IF3_se = df_se_3['Infected Facilities']
+# IF4_se = df_se_4['Infected Facilities']
+# IF5_se = df_se_5['Infected Facilities']
+# IF6_se = df_se_6['Infected Facilities']
+
+length = len(CI1)
+fig2 = plt.figure()
+
+# plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff=4%')
+plt.errorbar(range(0,length), IF1, 1.96*IF1_se, label='No Policies')
+plt.errorbar(range(0,length), IF2, 1.96*IF2_se, label='Agressive Testing and Quarantining\nQuarantining Facilities')
+plt.errorbar(range(0,length), IF3, 1.96*IF3_se, label='Relaxed Testing and Quarantining\nQuarantining Facilities')
+# plt.errorbar(range(0,length), IF3, 1.96*IF3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# plt.errorbar(range(0,length), IF4, 1.96*IF4_se, label='Testing(Quarantining Infected Staff)')
+# plt.errorbar(range(0,length), IF5, 1.96*IF5_se, label='Masking')
+# plt.errorbar(range(0,length), IF6, 1.96*IF6_se, label='No Policy')
+
+plt.xlabel('Num Days', figure=fig2)
+plt.ylabel('Num Facilities', figure=fig2)
+title = "Change in Cumulative Infected Facilites based on different policies"
+plt.title(title)
+plt.grid(True)
+
+plt.legend(bbox_to_anchor=(1.05, 1.0), loc=2, borderaxespad=0., prop={'size': 12})
+
+textstr = '\n'.join(['Staff: 50',
+                    'Residents: 100',
+                    'Test Result turnaround time: 1 days',
+                    'False Negative Rate: 10%',
+                    'Temp Staff: 10%',
+                    'Outside Infection rate: 0.01%'])
+props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+plt.text(1.06, 0.03, textstr, transform=plt.gca().transAxes, bbox=props)
+# fig1.set_figheight(8)
+# fig1.set_figwidth(8)
+#plt.show()
+fig2.savefig(title + '.png', bbox_inches='tight')
+
+
+
+QF1 = df_mean_1['Quarantined Facilities']
+QF2 = df_mean_2['Quarantined Facilities']
+QF3 = df_mean_3['Quarantined Facilities']
+# QF4 = df_mean_4['Quarantined Facilities']
+# QF5 = df_mean_5['Quarantined Facilities']
+# QF6 = df_mean_6['Quarantined Facilities']
+
+QF1_se = df_se_1['Quarantined Facilities']
+QF2_se = df_se_2['Quarantined Facilities']
+QF3_se = df_se_3['Quarantined Facilities']
+# QF4_se = df_se_4['Quarantined Facilities']
+# QF5_se = df_se_5['Quarantined Facilities']
+# QF6_se = df_se_6['Quarantined Facilities']
+
+length = len(CI1)
+fig3 = plt.figure()
+
+# plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff=4%')
+plt.errorbar(range(0,length), QF1, 1.96*QF1_se, label='No Policies')
+plt.errorbar(range(0,length), QF2, 1.96*QF2_se, label='Agressive Testing and Quarantining\nQuarantining Facilities')
+plt.errorbar(range(0,length), QF3, 1.96*QF3_se, label='Relaxed Testing and Quarantining\nQuarantining Facilities')
+# plt.errorbar(range(0,length), QF3, 1.96*QF3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# plt.errorbar(range(0,length), QF4, 1.96*QF4_se, label='Testing(Quarantining Infected Staff)')
+# plt.errorbar(range(0,length), QF5, 1.96*QF5_se, label='Masking')
+# plt.errorbar(range(0,length), QF6, 1.96*QF6_se, label='No Policy')
+
+plt.xlabel('Num Days', figure=fig3)
+plt.ylabel('Num Facilities', figure=fig3)
+title = "Change in Cumulative Quarantined Facilites based on different policies"
+plt.title(title)
+plt.grid(True)
+
+plt.legend(bbox_to_anchor=(1.05, 1.0), loc=2, borderaxespad=0., prop={'size': 12})
+
+textstr = '\n'.join(['Staff: 50',
+                    'Residents: 100',
+                    'Test Result turnaround time: 1 days',
+                    'False Negative Rate: 10%',
+                    'Temp Staff: 10%',
+                    'Outside Infection rate: 0.01%'])
+props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+plt.text(1.06, 0.03, textstr, transform=plt.gca().transAxes, bbox=props)
+# fig1.set_figheight(8)
+# fig1.set_figwidth(8)
+#plt.show()
+fig3.savefig(title + '.png', bbox_inches='tight')
+
+
+
+DI1 = df_mean_1['Daily Infected']
+DI2 = df_mean_2['Daily Infected']
+DI3 = df_mean_3['Daily Infected']
+# QF4 = df_mean_4['Quarantined Facilities']
+# QF5 = df_mean_5['Quarantined Facilities']
+# QF6 = df_mean_6['Quarantined Facilities']
+
+DI1_se = df_se_1['Daily Infected']
+DI2_se = df_se_2['Daily Infected']
+DI3_se = df_se_3['Daily Infected']
+# QF4_se = df_se_4['Quarantined Facilities']
+# QF5_se = df_se_5['Quarantined Facilities']
+# QF6_se = df_se_6['Quarantined Facilities']
+
+length = len(CI1)
+fig3 = plt.figure()
+
+# plt.errorbar(range(0,length), CI2, 1.96*CI2_se, label='Temp Staff=4%')
+plt.errorbar(range(0,length), DI1, 1.96*DI1_se, label='No Policies')
+plt.errorbar(range(0,length), DI2, 1.96*DI2_se, label='Agressive Testing and Quarantining\nQuarantining Facilities')
+plt.errorbar(range(0,length), DI3, 1.96*DI3_se, label='Relaxed Testing and Quarantining\nQuarantining Facilities')
+# plt.eIForbar(range(0,length), QF3, 1.96*QF3_se, label='Masking,\nTesting(Quarantining Infected Staff)')
+# plt.errorbar(range(0,length), QF4, 1.96*QF4_se, label='Testing(Quarantining Infected Staff)')
+# plt.errorbar(range(0,length), QF5, 1.96*QF5_se, label='Masking')
+# plt.errorbar(range(0,length), QF6, 1.96*QF6_se, label='No Policy')
+
+plt.xlabel('Num Days', figure=fig3)
+plt.ylabel('Num Facilities', figure=fig3)
+title = "Change in Daily Infected people based on different policies"
+plt.title(title)
+plt.grid(True)
+
+plt.legend(bbox_to_anchor=(1.05, 1.0), loc=2, borderaxespad=0., prop={'size': 12})
+
+textstr = '\n'.join(['Staff: 50',
+                    'Residents: 100',
+                    'Test Result turnaround time: 1 days',
+                    'False Negative Rate: 10%',
+                    'Temp Staff: 10%',
+                    'Outside Infection rate: 0.01%'])
+props = dict(boxstyle='round', facecolor='white', alpha=0.15)
+plt.text(1.06, 0.03, textstr, transform=plt.gca().transAxes, bbox=props)
+# fig1.set_figheight(8)
+# fig1.set_figwidth(8)
+#plt.show()
+fig3.savefig(title + '.png', bbox_inches='tight')
 
 
 
@@ -4004,8 +4374,7 @@ fig1.savefig(title + '.png', bbox_inches='tight')
 
 # SI0 = df0_se_0['Cumulative Infected']
 # SI1 = df0_se_0['Cumulative Infected Residents']
-# SI2 = df0_se_0['Cumulative Infected Staff']
-
+# SI2 = df0_se_0['Cumulative InfecQFd Staff'QF
 # SI3 = df1_se_0['Cumulative Infected']
 # SI4 = df1_se_0['Cumulative Infected Residents']
 # SI5 = df1_se_0['Cumulative Infected Staff']
@@ -4054,7 +4423,7 @@ fig1.savefig(title + '.png', bbox_inches='tight')
 
 # df_se_0 = pd.read_csv("Outputs_temp_staff_10%/facility_0/se.csv")
 # df_se_1 = pd.read_csv("Outputs_temp_staff_10%/facility_1/se.csv")
-# #df_se_2 = pd.read_csv("Outputs_temp_staff_10%/facility_2/se.csv")
+# #df_se_2 = pd.read_csv("Outputs_DImp_staffDI0%/facility_2/se.csv")
 
 # CI0 = df_mean_0['Cumulative Infected']
 # CI1 = df_mean_1['Cumulative Infected']
