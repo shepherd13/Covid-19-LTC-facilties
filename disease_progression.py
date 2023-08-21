@@ -41,9 +41,6 @@ class Covid19_DiseaseProgression(DiseaseProgression):
 						self.matric[facility].people[person].update_disease_state(day, 3) # symptomatic
 					else:
 						self.matric[facility].people[person].update_disease_state(day, 4) # asymptomatic
-				# # if infection over
-				# if (self.matric[facility].people[person].days_infected - self.matric[facility].people[person].transmission_start) >= self.matric[facility].people[person].transmission_end:
-				# 	self.matric[facility].people[person].update_disease_state(day, -1)  # recovered
 
 			# symptomatic
 			elif current_disease_state == 3:

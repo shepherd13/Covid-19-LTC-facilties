@@ -9,7 +9,7 @@ class Policies:
 
 	def implement_policies(self, day):
 		for facility in range(len(self.matric)):
-			facility_positive_cases = 0
+			#facility_positive_cases = 0
 			# Residents
 			person = 0
 			while person in range(self.matric[facility].n_residents + self.matric[facility].n_staff):
@@ -27,7 +27,7 @@ class Policies:
 					if day > self.parameters['Policy Start Testing']:
 						self.testing(day, person, facility)
 					if self.matric[facility].people[person].get_test_state(day) == 1: #get_disease_state(day) in [2,3,4]:
-						facility_positive_cases += 1
+						self.matric[facility].facility_positive_cases += 1
 						if self.matric[facility].people[person].class_name() == 'Resident':
 							if self.matric[facility].people[person].quarantine_days == 0:		# First day of qurantine
 								self.quarantine_infected_resident(person, facility)
@@ -36,16 +36,16 @@ class Policies:
 								self.replace_infected_staff(person, facility)
 				person += 1
 
-			if facility_positive_cases > 0:
-				if facility not in self.network.infected_facilities:
-					## Masking Policy
-					self.matric[facility].start_masking_policy = 1
-					self.network.infected_facilities.add(facility)
-					## Social Distancing
-					self.network.social_distancing(facility)
+			# if self.matric[facility].facility_positive_cases > 0:
+			# 	if facility not in self.network.infected_facilities:
+			# 		## Masking Policy
+			self.matric[facility].start_masking_policy = 1
+			# 		self.network.infected_facilities.add(facility)
+			# 		## Social Distancing
+			# 		self.network.social_distancing(facility)
 
 			## Isolating Facility
-			if (facility_positive_cases > self.parameters['Quarantine Location Infection Rate'] * (self.matric[facility].n_residents+self.matric[facility].n_staff)):
+			if (self.matric[facility].facility_positive_cases > self.parameters['Quarantine Location Infection Rate'] * (self.matric[facility].n_residents+self.matric[facility].n_staff)):
 				if facility not in self.network.isolated_facilities:
 					self.network.isolate_facility(day, facility)
 					self.matric[facility].quarantined = True

@@ -17,6 +17,7 @@ class Facility:
 		self.quarantine_days = 0
 		self.infected = False
 		self.quarantined = False
+		self.facility_positive_cases = 0
 
 	def set_daily_contacts(self, day, contact_pattern):
 		self.daily_contacts[day] = contact_pattern
@@ -41,15 +42,6 @@ class Person:
 		self.quarantine_status = 0
 		self.last_recorded = -1
 
-	# def update_test_state(self, day):
-	# 	if day < int(self.parameters['Days'])-1:
-	# 		if self.test_state[day+1] == 0:
-	# 			if (self.test_state[day] == 1) and (day - self.last_tested > 14):
-	# 				self.test_state[day+1] = 0
-	# 			elif (self.test_state[day] == -1) and (day - self.last_tested > self.parameters['Test Frequency']):
-	# 				self.test_state[day+1] = 0
-	# 			else:
-	# 				self.test_state[day+1] = self.test_state[day]
 
 	def get_test_state(self, day):
 		return self.test_state[day]
@@ -72,8 +64,7 @@ class Person:
 class Resident(Person):
 	def __init__(self, gender, parameters):
 		self.gender = gender
-		#self.ethnicity = ethnicity
-		#self.occupancy = occupancy
+		self.vaccinated = random.choices([0, 1], [1 - parameters['Resident Vaccination Rate'], parameters['Resident Vaccination Rate']])[0]
 		super().__init__(parameters)
 
 	def get_testing_parameters(self):
@@ -97,6 +88,7 @@ class Staff(Person):
 	def __init__(self, employment_type, parameters, shared_facilities):
 		self.employment_type = employment_type
 		self.shared_facilities = shared_facilities
+		self.vaccinated = random.choices([0, 1], [1 - parameters['Staff Vaccination Rate'], parameters['Staff Vaccination Rate']])[0]
 		super().__init__(parameters)
 
 	def update_shared_facilities(self, facility):

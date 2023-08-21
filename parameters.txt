@@ -1,28 +1,28 @@
-Output Directory: ts_10
+Output Directory: ts_10_77_vac_R25_S25_facilities
 Collect_Data_Facilitywise: 0
-Runs: 25
+Runs: 100
 Days: 180
-Facilities: 81
+Facilities: 255
 Facility residents: 100
 Facility staff: 50
 MALE_PERCENTAGE: 0.5
 TEMP_PERCENTAGE: 0.1
 CONTACTS_SS: 2
-CONTACTS_SR: 12
+CONTACTS_SR: 24
 CONTACTS_RS: 6
-CONTACTS_RR: 4
+CONTACTS_RR: 2
 CONTACTS_RR_reduced: 2
 Quanta Rate: 20
 Ventilation Rate: 4
 Room volume: 700
 Pulmonary ventilation rate: 0.48
 Social time spent: 2
-Initial Infection Rate: 0.05
+Initial Infection Rate: 0.0
 Probability of infection per infectious contact: 0.02
 Resident Asymptomatic Rate: 0.20
 Staff Asymptomatic Rate: 0.40
 Transmission rate type: static
-Outside Transmission Rate: 0.0001
+Outside Transmission Rate: 0.001
 Daily baseline mortality rate: 0.001
 Daily covid mortality rate: 0.02
 Policy Start Masking: 0
@@ -40,3 +40,5 @@ Test 2 Result turnaround time: 1
 Test 2 False Positive Rate: 0
 Test 2 False Negative Rate: 0.1
 threshold: 0
+Resident Vaccination Rate: 0.25
+Staff Vaccination Rate: 0.25

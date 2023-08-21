@@ -15,16 +15,12 @@ class InfectionTransfer:
 		else:
 			self.daily_staff_infected[facility] += 1
 
-		# if self.matric[facility].people[person_index].class_name()=='Staff':
-		# 	if self.matric[facility].people[person_index].employment_type == 1:
-		# 		print("DAY:", day, "Temporary staff infected:", facility, "Shared facilities:", self.matric[facility].people[person_index].shared_facilities)
-
 class InitialInfection(InfectionTransfer):
 	def transfer(self, day):
 		total_infected = 0
 		# Randomly select a facility where the infection starts
-		seed_facility = random.choice(range(len(self.matric)))
-		while(total_infected < 2):
+		while(total_infected < -1):
+			seed_facility = random.choice(range(len(self.matric)))
 			# Intialize the states to 0
 			self.daily_residents_infected = [0] * len(self.matric)
 			self.daily_staff_infected = [0] * len(self.matric)
@@ -35,13 +31,13 @@ class InitialInfection(InfectionTransfer):
 			infection_rate = self.parameters['Initial Infection Rate']
 			for facility in range(seed_facility, seed_facility+1):#range(len(self.matric)):
 				for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff):
-					if (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
+					if self.matric[facility].people[staff].vaccinated == 0 and (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
 						self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
 						self.update_daily_infected(staff, facility,day)
 
 				for staff in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
 					if (np.sum(self.matric[facility].daily_contacts[day%7][staff]) > 0):
-						if (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
+						if self.matric[facility].people[staff].vaccinated == 0 and (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
 							self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
 							self.update_daily_infected(staff, facility, day)
 
@@ -73,14 +69,16 @@ class ProbabilityPerInteraction(InfectionTransfer):
 		infection_probability = (1 - self.parameters['Masking efficiency'] * self.matric[facility].start_masking_policy) * self.parameters['Probability of infection per infectious contact']
 		person_1_disease_state = self.matric[facility].people[person_1].get_disease_state(day)
 		person_2_disease_state = self.matric[facility].people[person_2].get_disease_state(day)
+		person_1_vaccination_state = self.matric[facility].people[person_1].vaccinated
+		person_2_vaccination_state = self.matric[facility].people[person_2].vaccinated
 
 		if person_1_disease_state == 2 or person_1_disease_state == 3 or person_1_disease_state == 4:
-			if person_2_disease_state == 0 and (random.choices([0, 1], [1 - infection_probability, infection_probability])[0] == 1):
+			if person_2_disease_state == 0 and person_2_vaccination_state == 0 and (random.choices([0, 1], [1 - infection_probability, infection_probability])[0] == 1):
 				self.matric[facility].people[person_2].update_disease_state(day, 1)   # infected, incubating
 				self.update_daily_infected(person_2, facility, day)
 
 		elif person_2_disease_state == 2 or person_2_disease_state == 3 or person_2_disease_state == 4:
-			if person_1_disease_state == 0 and (random.choices([0, 1], [1 - infection_probability, infection_probability])[0] == 1):
+			if person_1_disease_state == 0 and person_1_vaccination_state == 0 and (random.choices([0, 1], [1 - infection_probability, infection_probability])[0] == 1):
 				self.matric[facility].people[person_1].update_disease_state(day, 1)   # infected, incubating
 				self.update_daily_infected(person_1, facility, day)
 
@@ -121,10 +119,6 @@ class GroupAirborneTransmission(InfectionTransfer):
 				/ (self.parameters['Ventilation Rate'] * self.parameters['Room volume']))
 		return prob
 
-	# def diff_wells_riley(time, num_infected, room_volume, room_vent_rate, mask_efficiency, pulm_vent_rate=0.48):
-	# 	return (num_infected * (pulm_vent_rate * (1.0 - mask_efficiency)) * time) / (room_vent_rate * room_volume)
-
-
 class OutsideTransmission(InfectionTransfer):
 	def transfer(self, day):
 		self.daily_residents_infected = [0] * len(self.matric)
@@ -132,13 +126,13 @@ class OutsideTransmission(InfectionTransfer):
 		infection_rate = self.parameters['Outside Transmission Rate']
 		for facility in range(len(self.matric)):
 			for staff in range(self.matric[facility].n_residents, self.matric[facility].n_residents + self.matric[facility].n_p_staff):
-				if (self.matric[facility].people[staff].get_disease_state(day) == 0) and (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
+				if (self.matric[facility].people[staff].vaccinated == 0 and self.matric[facility].people[staff].get_disease_state(day) == 0) and (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
 					self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
 					self.update_daily_infected(staff, facility, day)
 
 			for staff in range(self.matric[facility].n_residents + self.matric[facility].n_p_staff, self.matric[facility].n_residents + self.matric[facility].n_staff):
 				if (np.sum(self.matric[facility].daily_contacts[day % 7][staff]) > 0):
-					if (self.matric[facility].people[staff].get_disease_state(day) == 0) and (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
+					if (self.matric[facility].people[staff].vaccinated == 0 and self.matric[facility].people[staff].get_disease_state(day) == 0) and (random.choices([0, 1], [1-infection_rate, infection_rate])[0] == 1):
 						self.matric[facility].people[staff].update_disease_state(day, 1)   # infected, incubating
 						self.update_daily_infected(staff, facility, day)
 		return [(self.daily_residents_infected, self.daily_staff_infected)]

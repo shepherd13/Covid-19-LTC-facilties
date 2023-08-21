@@ -155,6 +155,7 @@ class Collect_data:
 
 	def update_states(self, day, daily_infected):
 		if self.facility_wise == 0:
+			self.infected_facilities[day] = []
 			for facility in range(len(self.matric)):
 				indicies = list(range(self.matric[facility].n_residents + self.matric[facility].n_p_staff))
 				self.set_states(day, facility, indicies)
@@ -163,7 +164,8 @@ class Collect_data:
 				self.set_states(day, facility, indicies)
 
 				if self.matric[facility].infected:
-					self.infected_facilities[day] += 1
+					self.infected_facilities[day].append(facility)
+					#self.infected_facilities[day] += 1
 
 				if self.matric[facility].quarantined:
 					self.quarantined_facilities[day] += 1

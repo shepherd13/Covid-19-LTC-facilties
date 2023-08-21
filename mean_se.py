@@ -248,33 +248,3 @@ def get_mean_se(parameters, output_dir):
                                     semTransMat, semSymMat, semAsymMat, semRec, semResRec, semStafRec,
                                     semDead, semDailyTested, semDailyTestedPos, semDailyTestedNeg,
                                     semCumTestedPos, semQuarantined, semInfectedFac, semQuarantinedFac)
-    #updateCSV2(directory + title + '_se.csv', semSus, semInf, semCumInf, semDailyInf, semnum_incub, semAsymMat, semSymMat,
-    #    semRec, semDead, semDailyDead, semHosp, sembreathMat, semrespMat, semicuMat, semDailyTestedMat, semSpreaderMat, semQuarantinedMat,
-    #    semSymptomaticTestsMat, semContactTraceTestsMat, semExtraTestsMat, semPositive_SymptomaticTestsMat, semPositive_ContactTraceTestsMat, semPositive_ExtraTestsMat)
-
-    # fig = plt.figure()
-
-    # plt.errorbar(range(0,length), meanSus, 1.96*semSus, label='Sus')
-    # plt.errorbar(range(0,length), meanInf, 1.96*semInf, label='Inf')
-    # plt.errorbar(range(0,length), meanRec, 1.96*semRec, label='Rec')
-    # plt.errorbar(range(0,length), meannum_incub, 1.96*semnum_incub, label='Exp')
-    # plt.errorbar(range(0,length), meanCumInf, 1.96*semCumInf, label='Total Inf')
-    # #plt.errorbar(range(0,length), meanDailyTested, 1.96*semDailyTestedMat, label='Daily Tested')
-    # #plt.errorbar(range(0,length), meanDead, 1.96*semDead, label='Dead')
-    # #plt.errorbar(range(0,length), meanHosp, 1.96*semHosp, label='Hospitalized')
-    # #plt.errorbar(range(0,length), meanDailyInf, 1.96*semDailyInf, label='Daily Infected')
-    # #plt.errorbar(range(0,length), meanDailyDead, 1.96*semDailyDead, label='Daily Dead')
-    # #plt.errorbar(range(0,length), meanAsymMat, 1.96*semAsymMat, label='Asymptomatic')
-    # #plt.errorbar(range(0,length), meanSymMat, 1.96*semSymMat, label='Symptomatic')
-    # plt.xlabel('Num Days', figure=fig)
-    # plt.ylabel('Num People', figure=fig)
-    # plt.title(title)
-
-    # plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-    # #plt.show()
-    # fig.savefig(directory + title + '_SEIR_Graph.png', bbox_inches='tight')
-
-    #maX = max(meanInf)
-    #day = np.where(meanInf == maX)
-    #print(str(maX) + " people infected on day " + str(day[0][0]))
-    #print(len(List))  # number of files tested
