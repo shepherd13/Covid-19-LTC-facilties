@@ -1,0 +1,12 @@
+input_file: ts_10_77
+output_file: newIF_p-values_test_1
+lengths: [179]
+false_negative_rates: ['10']
+herd_immunity: ['25', '75']
+temporary_staff: ['10']
+transformation: 'arcsinh'
+prev_rates_high: ['prev_rate_0.001/','prev_rate_0.00075/','prev_rate_0.0005/','prev_rate_0.0002/','prev_rate_0.0001/','prev_rate_0.00005/', 'prev_rate_0.00001/']
+pr_high: [100, 75, 50, 20, 10, 5, 1]
+prev_rates_low: ['prev_rate_0.00001/','prev_rate_0.0000075/','prev_rate_0.000005/','prev_rate_0.0000025/','prev_rate_0.000001/','prev_rate_0.0000005/','prev_rate_0.0000001/']
+pr_low: [1, 0.75, 0.5, 0.25, 0.1, 0.05, 0.01]
+simulations: [100]
